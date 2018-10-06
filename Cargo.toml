@@ -1,0 +1,8 @@
+[package]
+name = "raytracer-5607"
+version = "0.1.0"
+authors = ["Bridger Herman <herma582@umn.edu>"]
+
+[dependencies]
+image = "0.19"
+clap = "2.32"
