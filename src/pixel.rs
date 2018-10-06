@@ -198,13 +198,13 @@ impl Pixel {
     }
 }
 
-impl From<[f64; 4]> for Pixel {
-    fn from(bytes: [f64; 4]) -> Self {
+impl<'a> From<&'a [f64]> for Pixel {
+    fn from(numbers: &'a [f64]) -> Self {
         Self {
-            r: bytes[0],
-            g: bytes[1],
-            b: bytes[2],
-            a: bytes[3],
+            r: numbers[0],
+            g: numbers[1],
+            b: numbers[2],
+            a: 1.0,
             with_clamping: true,
         }
     }

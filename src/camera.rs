@@ -21,3 +21,15 @@ impl Default for Camera {
         }
     }
 }
+
+impl Camera {
+    pub fn from_parameters(parameters: &[f64]) -> Self {
+        assert_eq!(parameters.len(), 10);
+        Self {
+            position: Vector3::from(&parameters[0..3]),
+            direction: Vector3::from(&parameters[3..6]),
+            up: Vector3::from(&parameters[6..9]),
+            half_angle: parameters[9],
+        }
+    }
+}
