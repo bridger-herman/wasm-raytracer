@@ -1,9 +1,12 @@
+extern crate image as ext_image;
 #[macro_use]
 extern crate clap;
 
 pub mod camera;
 pub mod pixel;
 pub mod scene;
+pub mod image;
+pub mod ray_tracer;
 
 // TODO remove this
 pub mod vector;
@@ -20,4 +23,7 @@ fn main() {
         .expect("Scene file not found");
 
     let scene = scene::Scene::from_file(scene_file_path);
+
+    let rt = ray_tracer::RayTracer;
+    rt.render(&scene).expect("Unable to render scene");
 }
