@@ -12,23 +12,21 @@ impl RayTracer {
         let mut img = Image::new(scene.resolution.0, scene.resolution.1)
             .with_background(scene.background);
 
-        let horiz_half_angle = scene.resolution.0 as f64
-            * scene.camera.vert_half_angle
-            / scene.resolution.1 as f64;
-        let viewport_width = 2.0 * horiz_half_angle.tan();
         let viewport_height = 2.0 * scene.camera.vert_half_angle.tan();
-        let pixel_width = viewport_width / scene.resolution.1 as f64;
-        let pixel_height = viewport_height / scene.resolution.0 as f64;
+        let viewport_width = viewport_height
+            * (scene.resolution.0 as f64 / scene.resolution.1 as f64);
+        let pixel_width = viewport_width / scene.resolution.0 as f64;
+        let pixel_height = viewport_height / scene.resolution.1 as f64;
 
         // The upper-left-most pixel
         // 0.5s are to center the rays on each pixel
         let upper_left = scene.camera.position + scene.camera.direction
             + scene.camera.up
                 * pixel_height
-                * (scene.resolution.0 as f64 / 2.0 - 0.5)
+                * (scene.resolution.1 as f64 / 2.0 - 0.5)
             - scene.camera.right
                 * pixel_width
-                * (scene.resolution.1 as f64 / 2.0 - 0.5);
+                * (scene.resolution.0 as f64 / 2.0 - 0.5);
 
         for row in 0..scene.resolution.1 {
             for col in 0..scene.resolution.0 {
