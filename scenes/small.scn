@@ -1,0 +1,4 @@
+# A small scene for testing
+output_image ./output/test.png
+
+resolution 5 5

@@ -2,6 +2,7 @@
 
 use std::fs::File;
 use std::io::prelude::*;
+use std::str::FromStr;
 
 use camera::Camera;
 use pixel::Pixel;
@@ -74,6 +75,12 @@ impl Scene {
                     let float_tokens = parse_full_slice(&line[1..]);
                     scene.background = Pixel::from(float_tokens.as_slice());
                 }
+                "film_resolution" | "resolution" => {
+                    assert_eq!(line.len(), 3);
+                    // scene.resolution = (line[1].parse::<usize>(), line[2].parse::<usize>());
+                    let width_height: Vec<usize> = parse_full_slice(&line[1..]);
+                    scene.resolution = (width_height[0], width_height[1]);
+                }
                 _ => (),
             }
         }
@@ -83,9 +90,9 @@ impl Scene {
     }
 }
 
-fn parse_full_slice(str_slice: &[&str]) -> Vec<f64> {
+fn parse_full_slice<T: FromStr + Default>(str_slice: &[&str]) -> Vec<T> {
     str_slice
         .iter()
-        .map(|&s| s.parse::<f64>().unwrap_or(0.0))
+        .map(|&s| s.parse::<T>().unwrap_or_default())
         .collect()
 }

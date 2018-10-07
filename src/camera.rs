@@ -8,7 +8,8 @@ pub struct Camera {
     pub position: Vector3,
     pub direction: Vector3,
     pub up: Vector3,
-    pub half_angle: f64,
+    pub right: Vector3,
+    pub vert_half_angle: f64,
 }
 
 impl Default for Camera {
@@ -17,7 +18,8 @@ impl Default for Camera {
             position: Vector3::new(0.0, 0.0, 0.0),
             direction: Vector3::new(0.0, 0.0, 1.0),
             up: Vector3::new(0.0, 1.0, 0.0),
-            half_angle: 45.0,
+            right: Vector3::new(1.0, 0.0, 0.0),
+            vert_half_angle: 45.0_f64.to_radians(),
         }
     }
 }
@@ -25,11 +27,15 @@ impl Default for Camera {
 impl Camera {
     pub fn from_parameters(parameters: &[f64]) -> Self {
         assert_eq!(parameters.len(), 10);
+        let direction = Vector3::from(&parameters[3..6]);
+        let up = Vector3::from(&parameters[6..9]);
+        let right = direction.cross(&up);
         Self {
             position: Vector3::from(&parameters[0..3]),
-            direction: Vector3::from(&parameters[3..6]),
-            up: Vector3::from(&parameters[6..9]),
-            half_angle: parameters[9],
+            direction,
+            up,
+            right,
+            vert_half_angle: parameters[9],
         }
     }
 }

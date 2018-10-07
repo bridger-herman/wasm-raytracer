@@ -2,11 +2,15 @@ extern crate image as ext_image;
 #[macro_use]
 extern crate clap;
 
+#[cfg(test)]
+extern crate glm;
+
 pub mod camera;
-pub mod pixel;
-pub mod scene;
 pub mod image;
+pub mod pixel;
 pub mod ray_tracer;
+pub mod scene;
+pub mod ray;
 
 // TODO remove this
 pub mod vector;

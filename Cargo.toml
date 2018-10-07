@@ -6,3 +6,6 @@ authors = ["Bridger Herman <herma582@umn.edu>"]
 [dependencies]
 image = "0.19"
 clap = "2.32"
+
+[dev-dependencies]
+glm = "0.2"
