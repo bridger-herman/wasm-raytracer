@@ -6,6 +6,8 @@ use std::str::FromStr;
 
 use camera::Camera;
 use pixel::Pixel;
+use sphere::Sphere;
+use vector::Vector3;
 
 #[derive(Debug)]
 pub struct Scene {
@@ -20,8 +22,8 @@ pub struct Scene {
 
     /// The background color
     pub background: Pixel,
-    // TODO material
-    // TODO sphere
+
+    pub spheres: Vec<Sphere>,
     // TODO lights
     // TODO max_depth
 }
@@ -33,6 +35,7 @@ impl Default for Scene {
             resolution: (640, 480),
             output_image: String::from("./raytraced.bmp"),
             background: Pixel::from_rgb(0.0, 0.0, 0.0),
+            spheres: Vec::new(),
         }
     }
 }
@@ -77,9 +80,15 @@ impl Scene {
                 }
                 "film_resolution" | "resolution" => {
                     assert_eq!(line.len(), 3);
-                    // scene.resolution = (line[1].parse::<usize>(), line[2].parse::<usize>());
-                    let width_height: Vec<usize> = parse_full_slice(&line[1..]);
+                    let width_height = parse_full_slice(&line[1..]);
                     scene.resolution = (width_height[0], width_height[1]);
+                }
+                "sphere" => {
+                    assert_eq!(line.len(), 5);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    let position = Vector3::from(&float_tokens[..3]);
+                    let radius = float_tokens[3];
+                    scene.spheres.push(Sphere::new(radius, position));
                 }
                 _ => (),
             }

@@ -1,0 +1,7 @@
+# A single sphere
+
+sphere 0 0 2 1
+
+output_image ./output/single_sphere.png
+
+resolution 64 64

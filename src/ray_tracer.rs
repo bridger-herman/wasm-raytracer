@@ -1,14 +1,15 @@
 //! The main ray tracing implementation
 
 use image::Image;
-use scene::Scene;
+use pixel::Pixel;
 use ray::Ray;
+use scene::Scene;
 
 pub struct RayTracer;
 
 impl RayTracer {
     pub fn render(&self, scene: &Scene) -> Result<(), String> {
-        let img = Image::new(scene.resolution.0, scene.resolution.1)
+        let mut img = Image::new(scene.resolution.0, scene.resolution.1)
             .with_background(scene.background);
 
         let horiz_half_angle = scene.resolution.0 as f64
@@ -31,11 +32,19 @@ impl RayTracer {
 
         for row in 0..scene.resolution.1 {
             for col in 0..scene.resolution.0 {
+                // Compute the ray shooting from the eye
                 let image_plane_location = upper_left
                     - scene.camera.up * pixel_height * row as f64
                     + scene.camera.right * pixel_width * col as f64;
-                let ray_direction = image_plane_location - scene.camera.position;
+                let ray_direction =
+                    image_plane_location - scene.camera.position;
                 let ray = Ray::new(scene.camera.position, ray_direction);
+
+                for sphere in &scene.spheres {
+                    if sphere.intersects(&ray) {
+                        img.set_pixel(row, col, Pixel::from_rgb(1.0, 1.0, 1.0));
+                    }
+                }
                 // TODO: Remove (only for Mathematica visualization)
                 // println!(
                 // "{{{},{},{}}},",

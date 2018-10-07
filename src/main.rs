@@ -8,9 +8,10 @@ extern crate glm;
 pub mod camera;
 pub mod image;
 pub mod pixel;
+pub mod ray;
 pub mod ray_tracer;
 pub mod scene;
-pub mod ray;
+pub mod sphere;
 
 // TODO remove this
 pub mod vector;
