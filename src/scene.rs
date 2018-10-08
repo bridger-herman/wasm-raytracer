@@ -5,6 +5,7 @@ use std::io::prelude::*;
 use std::str::FromStr;
 
 use camera::Camera;
+use lights::point_light::PointLight;
 use material::Material;
 use pixel::Pixel;
 use sphere::Sphere;
@@ -24,8 +25,11 @@ pub struct Scene {
     /// The background color
     pub background: Pixel,
 
+    /// All the spheres in the scene
     pub spheres: Vec<Sphere>,
-    // TODO lights
+
+    /// Point lights in the scene
+    pub point_lights: Vec<PointLight>,
     // TODO max_depth
 }
 
@@ -37,6 +41,7 @@ impl Default for Scene {
             output_image: String::from("./raytraced.bmp"),
             background: Pixel::from_rgb(0.0, 0.0, 0.0),
             spheres: Vec::new(),
+            point_lights: Vec::new(),
         }
     }
 }
@@ -111,6 +116,13 @@ impl Scene {
                         transmissive,
                         float_tokens[13],
                     );
+                }
+                "point_light" => {
+                    assert_eq!(line.len(), 7);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    let color = Pixel::from(&float_tokens[..3]);
+                    let position = Vector3::from(&float_tokens[3..]);
+                    scene.point_lights.push(PointLight::new(color, position));
                 }
                 _ => (),
             }

@@ -15,4 +15,8 @@ impl Ray {
             direction: direction.normalized(),
         }
     }
+
+    pub fn eval(&self, t: f64) -> Vector3 {
+        self.start + self.direction * t
+    }
 }

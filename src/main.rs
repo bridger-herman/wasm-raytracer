@@ -7,6 +7,8 @@ extern crate glm;
 
 pub mod camera;
 pub mod image;
+pub mod intersection;
+pub mod lights;
 pub mod material;
 pub mod pixel;
 pub mod ray;
@@ -30,6 +32,6 @@ fn main() {
 
     let scene = scene::Scene::from_file(scene_file_path);
 
-    let rt = ray_tracer::RayTracer;
+    let rt = ray_tracer::RayTracer::default();
     rt.render(&scene).expect("Unable to render scene");
 }
