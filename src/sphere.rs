@@ -1,5 +1,6 @@
 //! Representation of a sphere to be ray traced
 
+use material::Material;
 use ray::Ray;
 use vector::Vector3;
 
@@ -7,12 +8,16 @@ use vector::Vector3;
 pub struct Sphere {
     pub radius: f64,
     pub position: Vector3,
-    // TODO add material
+    pub material: Material,
 }
 
 impl Sphere {
-    pub fn new(radius: f64, position: Vector3) -> Self {
-        Self { radius, position }
+    pub fn new(radius: f64, position: Vector3, material: Material) -> Self {
+        Self {
+            radius,
+            position,
+            material,
+        }
     }
 
     pub fn intersects(&self, ray: &Ray) -> bool {

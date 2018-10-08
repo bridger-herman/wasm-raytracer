@@ -1,7 +1,6 @@
 //! The main ray tracing implementation
 
 use image::Image;
-use pixel::Pixel;
 use ray::Ray;
 use scene::Scene;
 
@@ -40,7 +39,7 @@ impl RayTracer {
 
                 for sphere in &scene.spheres {
                     if sphere.intersects(&ray) {
-                        img.set_pixel(row, col, Pixel::from_rgb(1.0, 1.0, 1.0));
+                        img.set_pixel(row, col, sphere.material.diffuse);
                     }
                 }
                 // TODO: Remove (only for Mathematica visualization)

@@ -7,6 +7,7 @@ extern crate glm;
 
 pub mod camera;
 pub mod image;
+pub mod material;
 pub mod pixel;
 pub mod ray;
 pub mod ray_tracer;

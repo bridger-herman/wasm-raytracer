@@ -5,6 +5,7 @@ use std::io::prelude::*;
 use std::str::FromStr;
 
 use camera::Camera;
+use material::Material;
 use pixel::Pixel;
 use sphere::Sphere;
 use vector::Vector3;
@@ -58,6 +59,7 @@ impl Scene {
             .collect();
 
         let mut scene = Self::default();
+        let mut current_material = Material::default();
 
         for line in &tokens_per_line {
             if line.is_empty() {
@@ -88,7 +90,27 @@ impl Scene {
                     let float_tokens = parse_full_slice(&line[1..]);
                     let position = Vector3::from(&float_tokens[..3]);
                     let radius = float_tokens[3];
-                    scene.spheres.push(Sphere::new(radius, position));
+                    scene.spheres.push(Sphere::new(
+                        radius,
+                        position,
+                        current_material.clone(),
+                    ));
+                }
+                "material" => {
+                    assert_eq!(line.len(), 15);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    let ambient = Pixel::from(&float_tokens[..3]);
+                    let diffuse = Pixel::from(&float_tokens[3..6]);
+                    let specular = Pixel::from(&float_tokens[6..9]);
+                    let transmissive = Pixel::from(&float_tokens[10..13]);
+                    current_material = Material::new(
+                        ambient,
+                        diffuse,
+                        specular,
+                        float_tokens[9],
+                        transmissive,
+                        float_tokens[13],
+                    );
                 }
                 _ => (),
             }
