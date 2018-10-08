@@ -7,10 +7,15 @@ use vector::Vector3;
 pub struct PointLight {
     pub color: Pixel,
     pub position: Vector3,
+    pub power: f64,
 }
 
 impl PointLight {
-    pub fn new(color: Pixel, position: Vector3) -> Self {
-        Self { color, position }
+    pub fn new(color: Pixel, position: Vector3, power: f64) -> Self {
+        Self {
+            color,
+            position,
+            power,
+        }
     }
 }

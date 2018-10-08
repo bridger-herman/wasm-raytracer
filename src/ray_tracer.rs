@@ -6,6 +6,7 @@ use pixel::Pixel;
 use ray::Ray;
 use scene::Scene;
 use sphere::Sphere;
+use vector::MAX_VECTOR3;
 
 pub struct RayTracer {
     k_ambient: f64,
@@ -16,15 +17,15 @@ pub struct RayTracer {
 impl Default for RayTracer {
     fn default() -> Self {
         Self {
-            k_ambient: 0.4,
-            k_diffuse: 1.0,
+            k_ambient: 0.2,
+            k_diffuse: 0.3,
             k_specular: 1.0,
         }
     }
 }
 
 impl RayTracer {
-    pub fn render(&self, scene: &Scene) -> Result<(), String> {
+    pub fn render(&self, scene: &Scene) -> Image {
         let mut img = Image::new(scene.resolution.0, scene.resolution.1)
             .with_background(scene.background);
 
@@ -53,25 +54,34 @@ impl RayTracer {
                 let ray_direction =
                     image_plane_location - scene.camera.position;
                 let ray = Ray::new(scene.camera.position, ray_direction);
+                let mut closest_intersection =
+                    Intersection::new(MAX_VECTOR3, MAX_VECTOR3);
 
                 for sphere in &scene.spheres {
                     if let Some(intersection) = sphere.intersects(&ray) {
-                        img.set_pixel(
-                            row,
-                            col,
-                            self.calculate_illumination(
-                                scene,
-                                &sphere,
-                                &intersection,
-                            ),
-                        );
+                        let distance =
+                            (intersection.point - ray.start).length();
+                        if distance
+                            < (closest_intersection.point - ray.start).length()
+                        {
+                            img.set_pixel(
+                                row,
+                                col,
+                                // Pixel::from_rgb(1.0, 1.0, 1.0),
+                                self.calculate_illumination(
+                                    scene,
+                                    &sphere,
+                                    &intersection,
+                                ),
+                            );
+                            closest_intersection = intersection;
+                        }
                     }
                 }
             }
         }
 
-        img.write(&scene.output_image)?;
-        Ok(())
+        img
     }
 
     fn calculate_illumination(
@@ -85,9 +95,11 @@ impl RayTracer {
         for point_light in &scene.point_lights {
             // Calculate diffuse lighting
             let to_light = point_light.position - intersection.point;
-            let source_illumination = 1.0 / to_light.length();
+            let source_illumination = 1.0 / (to_light.length().powf(2.0));
             let angle = intersection.surface_normal.dot(&to_light).max(0.0);
-            sum = sum + point_light.color
+            let unclamped_color = Pixel::from_pix_unclamped(point_light.color);
+            sum = sum + unclamped_color
+                * point_light.power
                 * sphere.material.diffuse
                 * self.k_diffuse
                 * angle

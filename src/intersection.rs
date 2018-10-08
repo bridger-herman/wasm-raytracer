@@ -2,6 +2,7 @@
 
 use vector::Vector3;
 
+#[derive(Debug, Default)]
 pub struct Intersection {
     pub surface_normal: Vector3,
     pub point: Vector3,

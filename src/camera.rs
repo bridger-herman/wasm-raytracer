@@ -29,7 +29,7 @@ impl Camera {
         assert_eq!(parameters.len(), 10);
         let direction = Vector3::from(&parameters[3..6]);
         let up = Vector3::from(&parameters[6..9]);
-        let right = direction.cross(&up);
+        let right = up.cross(&direction);
         Self {
             position: Vector3::from(&parameters[0..3]),
             direction,

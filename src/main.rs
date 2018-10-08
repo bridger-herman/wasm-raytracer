@@ -33,5 +33,8 @@ fn main() {
     let scene = scene::Scene::from_file(scene_file_path);
 
     let rt = ray_tracer::RayTracer::default();
-    rt.render(&scene).expect("Unable to render scene");
+    let rendered = rt.render(&scene);
+    rendered
+        .write(&scene.output_image)
+        .expect("Unable to write image");
 }

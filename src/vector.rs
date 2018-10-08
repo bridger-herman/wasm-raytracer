@@ -1,9 +1,16 @@
 //! A simple vector
 
+use std::f64;
 use std::ops::{Add, Mul, Sub};
 
+pub const MAX_VECTOR3: Vector3 = Vector3 {
+    x: f64::MAX,
+    y: f64::MAX,
+    z: f64::MAX,
+};
+
 /// 3 dimensional vector
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Default, Debug, PartialEq, Clone, Copy)]
 pub struct Vector3 {
     pub x: f64,
     pub y: f64,

@@ -120,9 +120,12 @@ impl Scene {
                 "point_light" => {
                     assert_eq!(line.len(), 7);
                     let float_tokens = parse_full_slice(&line[1..]);
-                    let color = Pixel::from(&float_tokens[..3]);
+                    let power = &float_tokens[..3].iter().sum() / 3.0;
+                    let color = Pixel::from(&float_tokens[..3]) * (1.0 / power);
                     let position = Vector3::from(&float_tokens[3..]);
-                    scene.point_lights.push(PointLight::new(color, position));
+                    scene
+                        .point_lights
+                        .push(PointLight::new(color, position, power));
                 }
                 _ => (),
             }
