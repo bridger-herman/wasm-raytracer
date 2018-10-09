@@ -33,7 +33,9 @@ pub struct Scene {
 
     /// Point lights in the scene
     pub point_lights: Vec<PointLight>,
-    // TODO max_depth
+
+    /// The max depth of a ray
+    pub max_depth: f64,
 }
 
 impl Default for Scene {
@@ -46,6 +48,7 @@ impl Default for Scene {
             spheres: Vec::new(),
             ambient_light: Pixel::from_rgb(0.0, 0.0, 0.0),
             point_lights: Vec::new(),
+            max_depth: 5.0,
         }
     }
 }
@@ -135,6 +138,10 @@ impl Scene {
                     scene
                         .point_lights
                         .push(PointLight::new(color, position, power));
+                }
+                "max_depth" => {
+                    assert_eq!(line.len(), 2);
+                    scene.max_depth = line[1].parse::<f64>().unwrap_or(5.0);
                 }
                 _ => (),
             }
