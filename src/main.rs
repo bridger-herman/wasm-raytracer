@@ -32,7 +32,7 @@ fn main() {
 
     let scene = scene::Scene::from_file(scene_file_path);
 
-    let rt = ray_tracer::RayTracer::default();
+    let rt = ray_tracer::RayTracer;
     let rendered = rt.render(&scene);
     rendered
         .write(&scene.output_image)

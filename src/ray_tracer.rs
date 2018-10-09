@@ -8,21 +8,7 @@ use scene::Scene;
 use sphere::Sphere;
 use vector::MAX_VECTOR3;
 
-pub struct RayTracer {
-    k_ambient: f64,
-    k_diffuse: f64,
-    k_specular: f64,
-}
-
-impl Default for RayTracer {
-    fn default() -> Self {
-        Self {
-            k_ambient: 0.2,
-            k_diffuse: 0.3,
-            k_specular: 1.0,
-        }
-    }
-}
+pub struct RayTracer;
 
 impl RayTracer {
     pub fn render(&self, scene: &Scene) -> Image {
@@ -90,17 +76,19 @@ impl RayTracer {
         intersection: &Intersection,
     ) -> Pixel {
         let mut sum = Pixel::from_rgba_unclamped(0.0, 0.0, 0.0, 0.0);
-        sum = sum + sphere.material.ambient * self.k_ambient;
+        sum = sum + sphere.material.ambient * scene.ambient_light;
         for point_light in &scene.point_lights {
             // Calculate diffuse lighting
             let to_light = point_light.position - intersection.point;
             let source_illumination = 1.0 / (to_light.length().powf(2.0));
-            let angle = intersection.surface_normal.dot(&to_light).max(0.0);
+            let angle = intersection
+                .surface_normal
+                .dot(&to_light.normalized())
+                .max(0.0);
             let unclamped_color = Pixel::from_pix_unclamped(point_light.color);
             sum = sum + unclamped_color
                 * point_light.power
                 * sphere.material.diffuse
-                * self.k_diffuse
                 * angle
                 * source_illumination;
         }

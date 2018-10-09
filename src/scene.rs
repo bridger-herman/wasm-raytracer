@@ -28,6 +28,9 @@ pub struct Scene {
     /// All the spheres in the scene
     pub spheres: Vec<Sphere>,
 
+    /// Ambient lighting in a scene
+    pub ambient_light: Pixel,
+
     /// Point lights in the scene
     pub point_lights: Vec<PointLight>,
     // TODO max_depth
@@ -41,6 +44,7 @@ impl Default for Scene {
             output_image: String::from("./raytraced.bmp"),
             background: Pixel::from_rgb(0.0, 0.0, 0.0),
             spheres: Vec::new(),
+            ambient_light: Pixel::from_rgb(0.0, 0.0, 0.0),
             point_lights: Vec::new(),
         }
     }
@@ -116,6 +120,11 @@ impl Scene {
                         transmissive,
                         float_tokens[13],
                     );
+                }
+                "ambient_light" => {
+                    assert_eq!(line.len(), 4);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    scene.ambient_light = Pixel::from(float_tokens.as_slice());
                 }
                 "point_light" => {
                     assert_eq!(line.len(), 7);
