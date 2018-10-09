@@ -67,7 +67,6 @@ impl RayTracer {
                             img.set_pixel(
                                 row,
                                 col,
-                                // Pixel::from_rgb(1.0, 1.0, 1.0),
                                 self.calculate_illumination(
                                     scene,
                                     &sphere,

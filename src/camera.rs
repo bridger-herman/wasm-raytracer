@@ -27,15 +27,15 @@ impl Default for Camera {
 impl Camera {
     pub fn from_parameters(parameters: &[f64]) -> Self {
         assert_eq!(parameters.len(), 10);
-        let direction = Vector3::from(&parameters[3..6]);
-        let up = Vector3::from(&parameters[6..9]);
-        let right = up.cross(&direction);
+        let direction = Vector3::from(&parameters[3..6]).normalized();
+        let up = Vector3::from(&parameters[6..9]).normalized();
+        let right = up.cross(&direction).normalized();
         Self {
             position: Vector3::from(&parameters[0..3]),
             direction,
             up,
             right,
-            vert_half_angle: parameters[9],
+            vert_half_angle: parameters[9].to_radians(),
         }
     }
 }
