@@ -1,7 +1,7 @@
 //! A simple vector
 
 use std::f64;
-use std::ops::{Add, Mul, Sub};
+use std::ops::{Add, Mul, Neg, Sub};
 
 pub const MAX_VECTOR3: Vector3 = Vector3 {
     x: f64::MAX,
@@ -64,6 +64,18 @@ impl Sub<Vector3> for Vector3 {
     }
 }
 
+impl Neg for Vector3 {
+    type Output = Vector3;
+
+    fn neg(self) -> Self {
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
+    }
+}
+
 impl Vector3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
@@ -92,6 +104,10 @@ impl Vector3 {
             y: self.y / length,
             z: self.z / length,
         }
+    }
+
+    pub fn reflect(self, normal: &Self) -> Self {
+        self - (*normal * self.dot(normal)) * 2.0
     }
 }
 
@@ -147,5 +163,16 @@ mod tests {
         assert_eq!(norm.x as f32, norm_glm.x);
         assert_eq!(norm.y as f32, norm_glm.y);
         assert_eq!(norm.z as f32, norm_glm.z);
+    }
+
+    #[test]
+    fn reflect() {
+        let (a_glm, b_glm, a, b) = make_vectors();
+
+        let reflect_glm = glm::reflect(a_glm, b_glm);
+        let reflect = a.reflect(&b);
+        assert_eq!(reflect.x as f32, reflect_glm.x);
+        assert_eq!(reflect.y as f32, reflect_glm.y);
+        assert_eq!(reflect.z as f32, reflect_glm.z);
     }
 }
