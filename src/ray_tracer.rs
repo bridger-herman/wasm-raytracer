@@ -23,8 +23,7 @@ impl RayTracer {
 
         // The upper-left-most pixel
         // 0.5s are to center the rays on each pixel
-        let upper_left = scene.camera.position
-            + scene.camera.direction
+        let upper_left = scene.camera.position + scene.camera.direction
             + scene.camera.up
                 * pixel_height
                 * (scene.resolution.1 as f64 / 2.0 - 0.5)
@@ -81,20 +80,34 @@ impl RayTracer {
         sum = sum + sphere.material.ambient * scene.ambient_light;
 
         for point_light in &scene.point_lights {
-            // Calculate diffuse lighting
             let to_light = point_light.position - intersection.point;
+
+            // Calculate shadows
+            let in_shadow = scene.spheres.iter().any(|sphere| {
+                sphere
+                    .intersects(&Ray::new(
+                        intersection.point,
+                        to_light.normalized(),
+                    ))
+                    .is_some()
+            });
+
+            if in_shadow {
+                continue;
+            }
+
+            // Calculate diffuse lighting
             let source_illumination = 1.0 / (to_light.length().powf(2.0));
             let angle = intersection
                 .surface_normal
                 .dot(&to_light.normalized())
                 .max(0.0);
             let unclamped_color = Pixel::from_pix_unclamped(point_light.color);
-            sum = sum
-                + unclamped_color
-                    * point_light.power
-                    * sphere.material.diffuse
-                    * angle
-                    * source_illumination;
+            sum = sum + unclamped_color
+                * point_light.power
+                * sphere.material.diffuse
+                * angle
+                * source_illumination;
 
             // Calculate Phong specular reflection
             let view =
