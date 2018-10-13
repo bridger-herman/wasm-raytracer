@@ -5,6 +5,7 @@ use std::io::prelude::*;
 use std::str::FromStr;
 
 use camera::Camera;
+use lights::light::Light;
 use lights::point_light::PointLight;
 use material::Material;
 use pixel::Pixel;
@@ -31,8 +32,8 @@ pub struct Scene {
     /// Ambient lighting in a scene
     pub ambient_light: Pixel,
 
-    /// Point lights in the scene
-    pub point_lights: Vec<PointLight>,
+    /// All other lights in the scene
+    pub lights: Vec<Box<Light>>,
 
     /// The max depth of a ray
     pub max_depth: f64,
@@ -47,7 +48,7 @@ impl Default for Scene {
             background: Pixel::from_rgb(0.0, 0.0, 0.0),
             spheres: Vec::new(),
             ambient_light: Pixel::from_rgb(0.0, 0.0, 0.0),
-            point_lights: Vec::new(),
+            lights: Vec::new(),
             max_depth: 5.0,
         }
     }
@@ -132,12 +133,11 @@ impl Scene {
                 "point_light" => {
                     assert_eq!(line.len(), 7);
                     let float_tokens = parse_full_slice(&line[1..]);
-                    let power = &float_tokens[..3].iter().sum::<f64>() / 3.0;
-                    let color = Pixel::from(&float_tokens[..3]) * (1.0 / power);
+                    let color = Pixel::from_slice_unclamped(&float_tokens[..3]);
                     let position = Vector3::from(&float_tokens[3..]);
                     scene
-                        .point_lights
-                        .push(PointLight::new(color, position, power));
+                        .lights
+                        .push(Box::new(PointLight::new(color, position)));
                 }
                 "max_depth" => {
                     assert_eq!(line.len(), 2);

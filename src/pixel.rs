@@ -74,6 +74,16 @@ pub struct Pixel {
 }
 
 impl Pixel {
+    pub fn from_slice_unclamped(numbers: &[f64]) -> Self {
+        Self {
+            r: numbers[0],
+            g: numbers[1],
+            b: numbers[2],
+            a: 1.0,
+            with_clamping: false,
+        }
+    }
+
     pub fn from_pix_unclamped(mut pix: Self) -> Self {
         pix.with_clamping = false;
         pix

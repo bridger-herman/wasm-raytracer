@@ -31,6 +31,7 @@ impl RayTracer {
                 * pixel_width
                 * (scene.resolution.0 as f64 / 2.0 - 0.5);
 
+        let mut done = 0;
         for row in 0..scene.resolution.1 {
             for col in 0..scene.resolution.0 {
                 // Compute the ray shooting from the eye
@@ -63,6 +64,14 @@ impl RayTracer {
                         }
                     }
                 }
+                done += 1;
+                if done % 10000 == 0 {
+                    println!(
+                        "Ray casting: {}/{}",
+                        done,
+                        scene.resolution.0 * scene.resolution.1
+                    );
+                }
             }
         }
 
@@ -79,8 +88,8 @@ impl RayTracer {
         let mut sum = Pixel::from_rgba_unclamped(0.0, 0.0, 0.0, 0.0);
         sum = sum + sphere.material.ambient * scene.ambient_light;
 
-        for point_light in &scene.point_lights {
-            let to_light = point_light.position - intersection.point;
+        for light in &scene.lights {
+            let to_light = light.direction(intersection);
 
             // Calculate shadows
             let in_shadow = scene.spheres.iter().any(|sphere| {
@@ -96,30 +105,10 @@ impl RayTracer {
                 continue;
             }
 
-            // Calculate diffuse lighting
-            let source_illumination = 1.0 / (to_light.length().powf(2.0));
-            let angle = intersection
-                .surface_normal
-                .dot(&to_light.normalized())
-                .max(0.0);
-            let unclamped_color = Pixel::from_pix_unclamped(point_light.color);
-            sum = sum + unclamped_color
-                * point_light.power
-                * sphere.material.diffuse
-                * angle
-                * source_illumination;
+            sum = sum + light.diffuse(&intersection, &sphere.material);
 
-            // Calculate Phong specular reflection
-            let view =
-                (scene.camera.position - intersection.point).normalized();
-            let reflection = (to_light)
-                .normalized()
-                .reflect(&intersection.surface_normal);
-            let phong_dot = view
-                .dot(&reflection)
-                .min(0.0)
-                .powf(sphere.material.phong_power);
-            sum = sum + unclamped_color * sphere.material.specular * phong_dot;
+            sum = sum
+                + light.specular(&scene.camera, intersection, &sphere.material);
         }
 
         sum
