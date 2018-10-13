@@ -1,4 +1,4 @@
-//! Point light. Radiates equally in all directions.
+//! Directional light. Simulates a star-like light.
 
 use camera::Camera;
 use intersection::Intersection;
@@ -8,20 +8,20 @@ use pixel::Pixel;
 use vector::Vector3;
 
 #[derive(Debug)]
-pub struct PointLight {
+pub struct DirectionalLight {
     pub color: Pixel,
-    pub position: Vector3,
+    pub direction: Vector3,
 }
 
-impl PointLight {
-    pub fn new(color: Pixel, position: Vector3) -> Self {
-        Self { color, position }
+impl DirectionalLight {
+    pub fn new(color: Pixel, direction: Vector3) -> Self {
+        Self { color, direction }
     }
 }
 
-impl Light for PointLight {
-    fn to_light(&self, intersection: &Intersection) -> Vector3 {
-        self.position - intersection.point
+impl Light for DirectionalLight {
+    fn to_light(&self, _intersection: &Intersection) -> Vector3 {
+        -self.direction
     }
 
     fn diffuse(
@@ -31,12 +31,11 @@ impl Light for PointLight {
     ) -> Pixel {
         let to_light = self.to_light(intersection);
 
-        let source_illumination = 1.0 / (to_light.length().powf(2.0));
         let angle = intersection
             .surface_normal
             .dot(&to_light.normalized())
             .max(0.0);
-        self.color * material.diffuse * angle * source_illumination
+        self.color * material.diffuse * angle
     }
 
     fn specular(

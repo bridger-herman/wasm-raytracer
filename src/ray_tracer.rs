@@ -89,7 +89,7 @@ impl RayTracer {
         sum = sum + sphere.material.ambient * scene.ambient_light;
 
         for light in &scene.lights {
-            let to_light = light.direction(intersection);
+            let to_light = light.to_light(intersection);
 
             // Calculate shadows
             let in_shadow = scene.spheres.iter().any(|sphere| {

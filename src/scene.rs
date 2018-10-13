@@ -5,6 +5,7 @@ use std::io::prelude::*;
 use std::str::FromStr;
 
 use camera::Camera;
+use lights::directional_light::DirectionalLight;
 use lights::light::Light;
 use lights::point_light::PointLight;
 use material::Material;
@@ -138,6 +139,15 @@ impl Scene {
                     scene
                         .lights
                         .push(Box::new(PointLight::new(color, position)));
+                }
+                "directional_light" => {
+                    assert_eq!(line.len(), 7);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    let color = Pixel::from_slice_unclamped(&float_tokens[..3]);
+                    let direction = Vector3::from(&float_tokens[3..]);
+                    scene.lights.push(Box::new(DirectionalLight::new(
+                        color, direction,
+                    )));
                 }
                 "max_depth" => {
                     assert_eq!(line.len(), 2);
