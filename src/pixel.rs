@@ -63,6 +63,12 @@ impl From<RawPixel> for Pixel {
     }
 }
 
+impl<'a> From<&'a RawPixel> for Vec<u8> {
+    fn from(raw: &'a RawPixel) -> Vec<u8> {
+        vec![raw.r, raw.g, raw.b, raw.a]
+    }
+}
+
 /// Holds all pixel information as a float
 #[derive(Debug, Copy, Clone)]
 pub struct Pixel {

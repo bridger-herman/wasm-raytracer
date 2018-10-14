@@ -21,9 +21,8 @@ pub mod sphere;
 pub mod vector;
 
 use conrod::backend::glium::glium::{self, Surface};
-use conrod::{widget, Colorable, Positionable, Widget};
+use conrod::{widget, Positionable, Sizeable, Widget};
 
-const WINDOW_SIZE: (f64, f64) = (800.0, 800.0);
 const TITLE: &str = "Ray Tracer";
 
 fn main() {
@@ -33,19 +32,29 @@ fn main() {
         (@arg scene_file: +required)
     ).get_matches();
 
+    let scene_file_path = matches
+        .value_of("scene_file")
+        .expect("Scene file not found");
+
+    let scene = scene::Scene::from_file(scene_file_path);
+
+    let rt = ray_tracer::RayTracer;
+    let rendered = rt.render(&scene);
+    let window_size = (rendered.width as f64 + 200.0, rendered.height as f64);
+
     // Create the GUI window and main loop
     let mut events_loop = glium::glutin::EventsLoop::new();
     let window = glium::glutin::WindowBuilder::new()
         .with_title(TITLE)
-        .with_dimensions((WINDOW_SIZE.0, WINDOW_SIZE.1).into());
+        .with_dimensions((window_size.0, window_size.1).into());
     let context = glium::glutin::ContextBuilder::new()
         .with_vsync(true)
         .with_multisampling(4);
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
     // Create the UI iteself
-    let mut ui = conrod::UiBuilder::new([WINDOW_SIZE.0, WINDOW_SIZE.1]).build();
-    widget_ids!(struct Ids { text });
+    let mut ui = conrod::UiBuilder::new([window_size.0, window_size.1]).build();
+    widget_ids!(struct Ids { rendered_img });
     let ids = Ids::new(ui.widget_id_generator());
 
     // Add the font
@@ -54,7 +63,15 @@ fn main() {
         .expect("Unable to load font");
 
     // Map a texture
-    let image_map = conrod::image::Map::<glium::texture::Texture2d>::new();
+    let mut image_map = conrod::image::Map::<glium::texture::Texture2d>::new();
+
+    // Insert an image into the map
+    let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(
+        &rendered.to_bytes(),
+        (rendered.width as u32, rendered.height as u32),
+    );
+    let texture = glium::texture::Texture2d::new(&display, raw_image).unwrap();
+    let rendered_img = image_map.insert(texture);
 
     // Create the UI for the renderer
     let mut renderer = conrod::backend::glium::Renderer::new(&display).unwrap();
@@ -84,12 +101,10 @@ fn main() {
 
         let ui = &mut ui.set_widgets();
 
-        // "Hello World!" in the middle of the screen.
-        widget::Text::new("Hello World!")
-            .middle_of(ui.window)
-            .color(conrod::color::WHITE)
-            .font_size(32)
-            .set(ids.text, ui);
+        widget::Image::new(rendered_img)
+            .w_h(rendered.width as f64, rendered.height as f64)
+            .top_left()
+            .set(ids.rendered_img, ui);
 
         if let Some(primitives) = ui.draw_if_changed() {
             renderer.fill(&display, primitives, &image_map);
@@ -99,16 +114,4 @@ fn main() {
             target.finish().unwrap();
         }
     }
-
-    // let scene_file_path = matches
-    // .value_of("scene_file")
-    // .expect("Scene file not found");
-
-    // let scene = scene::Scene::from_file(scene_file_path);
-
-    // let rt = ray_tracer::RayTracer;
-    // let rendered = rt.render(&scene);
-    // rendered
-    // .write(&scene.output_image)
-    // .expect("Unable to write image");
 }

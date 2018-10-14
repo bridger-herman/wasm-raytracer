@@ -23,7 +23,8 @@ impl RayTracer {
 
         // The upper-left-most pixel
         // 0.5s are to center the rays on each pixel
-        let upper_left = scene.camera.position + scene.camera.direction
+        let upper_left = scene.camera.position
+            + scene.camera.direction
             + scene.camera.up
                 * pixel_height
                 * (scene.resolution.1 as f64 / 2.0 - 0.5)
@@ -97,8 +98,7 @@ impl RayTracer {
                     .intersects(&Ray::new(
                         intersection.point,
                         to_light.normalized(),
-                    ))
-                    .is_some()
+                    )).is_some()
             });
 
             if in_shadow {
@@ -107,8 +107,11 @@ impl RayTracer {
 
             sum = sum + light.diffuse(&intersection, &sphere.material);
 
-            sum = sum
-                + light.specular(&scene.camera, intersection, &sphere.material);
+            sum = sum + light.specular(
+                &scene.camera,
+                intersection,
+                &sphere.material,
+            );
         }
 
         sum
