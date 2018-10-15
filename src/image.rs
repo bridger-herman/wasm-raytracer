@@ -215,10 +215,6 @@ impl Image {
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
-        self.pixels
-            .iter()
-            .map(Vec::<u8>::from)
-            .flatten()
-            .collect()
+        self.pixels.iter().map(Vec::<u8>::from).flatten().collect()
     }
 }

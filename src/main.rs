@@ -21,7 +21,7 @@ pub mod sphere;
 pub mod vector;
 
 use conrod::backend::glium::glium::{self, Surface};
-use conrod::{widget, Positionable, Sizeable, Widget};
+use conrod::{color, widget, Labelable, Positionable, Sizeable, Widget};
 
 const TITLE: &str = "Ray Tracer";
 
@@ -39,7 +39,7 @@ fn main() {
     let scene = scene::Scene::from_file(scene_file_path);
 
     let rt = ray_tracer::RayTracer;
-    let rendered = rt.render(&scene);
+    let mut rendered = rt.render(&scene);
     let window_size = (rendered.width as f64 + 200.0, rendered.height as f64);
 
     // Create the GUI window and main loop
@@ -54,7 +54,7 @@ fn main() {
 
     // Create the UI iteself
     let mut ui = conrod::UiBuilder::new([window_size.0, window_size.1]).build();
-    widget_ids!(struct Ids { rendered_img });
+    widget_ids!(struct Ids { rendered_img, render_button });
     let ids = Ids::new(ui.widget_id_generator());
 
     // Add the font
@@ -82,6 +82,14 @@ fn main() {
         events_loop.poll_events(|event| events.push(event));
 
         for event in events {
+            // Use the `winit` backend feature to convert the winit event
+            // to a conrod one.
+            if let Some(event) =
+                conrod::backend::winit::convert_event(event.clone(), &display)
+            {
+                ui.handle_event(event);
+            }
+
             if let glium::glutin::Event::WindowEvent { event, .. } = event {
                 match event {
                     glium::glutin::WindowEvent::CloseRequested
@@ -106,6 +114,18 @@ fn main() {
             .top_left()
             .set(ids.rendered_img, ui);
 
+        if widget::Button::new()
+            .hover_color(color::GREEN)
+            .press_color(color::BLUE)
+            .label("Render Image")
+            .w_h(200.0, 50.0)
+            .bottom_right()
+            .set(ids.render_button, ui)
+            .was_clicked()
+        {
+            rendered = render_img(&rt, scene_file_path);
+        }
+
         if let Some(primitives) = ui.draw_if_changed() {
             renderer.fill(&display, primitives, &image_map);
             let mut target = display.draw();
@@ -114,4 +134,12 @@ fn main() {
             target.finish().unwrap();
         }
     }
+}
+
+fn render_img(
+    ray_tracer: &ray_tracer::RayTracer,
+    scene_file_path: &str,
+) -> image::Image {
+    let scene = scene::Scene::from_file(scene_file_path);
+    ray_tracer.render(&scene)
 }
