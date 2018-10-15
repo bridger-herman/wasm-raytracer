@@ -39,8 +39,7 @@ fn main() {
         .expect("Scene file not found")
         .to_string();
 
-    let scene = scene::Scene::from_file(scene_file_path.as_str());
-
+    let mut scene = scene::Scene::from_file(scene_file_path.as_str());
     let rt = ray_tracer::RayTracer;
     let mut rendered = rt.render(&scene);
     let window_size = (rendered.width as f64 + 200.0, rendered.height as f64);
@@ -57,7 +56,7 @@ fn main() {
 
     // Create the UI iteself
     let mut ui = conrod::UiBuilder::new([window_size.0, window_size.1]).build();
-    widget_ids!(struct Ids { rendered_img, render_button, scene_file });
+    widget_ids!(struct Ids { rendered_img, render_button, scene_file, save_button });
     let ids = Ids::new(ui.widget_id_generator());
 
     // Add the font
@@ -118,15 +117,29 @@ fn main() {
             .set(ids.rendered_img, ui);
 
         if widget::Button::new()
+            .color(color::LIGHT_GRAY)
+            .hover_color(color::GREEN)
+            .press_color(color::BLUE)
+            .label("Save Image")
+            .w_h(200.0, 50.0)
+            .bottom_right()
+            .set(ids.save_button, ui)
+            .was_clicked()
+        {
+            rendered.write(&scene.output_image).expect("Unable to write image file");
+        }
+
+        if widget::Button::new()
             .hover_color(color::GREEN)
             .press_color(color::BLUE)
             .label("Render Image")
             .w_h(200.0, 50.0)
-            .bottom_right()
+            .mid_top_with_margin_on(ids.save_button, -50.0)
             .set(ids.render_button, ui)
             .was_clicked()
         {
-            rendered = render_img(&rt, scene_file_path.as_str());
+            scene = scene::Scene::from_file(&scene_file_path);
+            rendered = rt.render(&scene);
             let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(
                 &rendered.to_bytes(),
                 (rendered.width as u32, rendered.height as u32),
@@ -137,6 +150,7 @@ fn main() {
                 .replace(rendered_img, texture)
                 .expect("Couldn't get image");
         }
+
 
         if let Some(edit) = widget::TextEdit::new(scene_file_path.as_str())
             .color(color::WHITE)
@@ -155,12 +169,4 @@ fn main() {
             target.finish().unwrap();
         }
     }
-}
-
-fn render_img(
-    ray_tracer: &ray_tracer::RayTracer,
-    scene_file_path: &str,
-) -> image::Image {
-    let scene = scene::Scene::from_file(scene_file_path);
-    ray_tracer.render(&scene)
 }
