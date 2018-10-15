@@ -32,6 +32,7 @@ fn main() {
         (version: crate_version!())
         (author: crate_authors!())
         (@arg scene_file: +required)
+        (@arg no_gui: --no_gui -n)
     ).get_matches();
 
     let mut scene_file_path = matches
@@ -39,9 +40,17 @@ fn main() {
         .expect("Scene file not found")
         .to_string();
 
+    let no_gui = matches.occurrences_of("no_gui") > 0;
+
     let mut scene = scene::Scene::from_file(scene_file_path.as_str());
     let rt = ray_tracer::RayTracer;
     let mut rendered = rt.render(&scene);
+
+    if no_gui {
+        rendered.write(&scene.output_image).expect("Unable to write image");
+        return;
+    }
+
     let window_size = (rendered.width as f64 + 200.0, rendered.height as f64);
 
     // Create the GUI window and main loop
