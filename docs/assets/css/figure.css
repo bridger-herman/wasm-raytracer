@@ -1,0 +1,17 @@
+article {
+  counter-reset: figCounter;
+}
+figure {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+figcaption {
+  font-family: Garamond;
+  margin: 10px;
+}
+figure:not(.nocount) figcaption::before {
+  content: "Figure " counter(figCounter) ": ";
+  counter-increment: figCounter;
+}

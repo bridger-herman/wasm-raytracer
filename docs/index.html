@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+
+        <link rel="stylesheet" href="./assets/css/index.css">
+        <link rel="stylesheet" href="./assets/css/figure.css">
+    </head>
+    <body>
+      <article>
+        <h1 id="csci-5607-homework-2---ray-casting">CSCI 5607 Homework 2 - Ray
+        Casting</h1>
+
+        <p>The goal of this project is to create a simple ray casting program
+        that can draw spheres, with shading.</p>
+
+        <h2 id="features">Features</h2>
+        <p>The following features are implemented:</p>
+
+        <h3 id="scene-setup">Scene Setup</h3>
+        <ul>
+            <li>Camera placement, resolution, and aspect ratio</li>
+            <li>User specified background colors</li>
+            <li>UI + OpenGL output</li>
+            <li>Image output</li>
+        </ul>
+
+        <h3 id="primitives">Primitives</h3>
+        <ul>
+            <li>
+                Spheres
+            </li>
+        </ul>
+
+        <h3 id="lighting">Lighting</h3>
+        <ul>
+            <li>Ambient light</li>
+            <li>Point light sources</li>
+            <li>Shadows</li>
+            <li>Multiple light sources</li>
+            <li>Directional light sources</li>
+        </ul>
+
+        <h3 id="sampling">Sampling</h3>
+        <ul>
+            <li>Basic sampling</li>
+        </ul>
+
+        <h3 id="materials">Materials</h3>
+        <ul>
+            <li>Color and specularity</li>
+        </ul>
+
+        <h2 id="command-line">Command Line Arguments</h2>
+        <p>The following command line arguments are accepted</p>
+        <ul>
+            <li>
+                <code>[scene_file]</code>: The scene file to load and
+                initially render
+            </li>
+            <li>
+                <code>--no_gui, -n</code>: Disable the GUI and only write an
+                image
+            </li>
+        </ul>
+
+        <h2 id="interaction">Interaction</h2>
+        <p>The following interactions are supported in this application:</p>
+        <ul>
+            <li><strong>Render Image:</strong> Click the "Render Image" button
+                to render the scene referred to by the text right above it.</li>
+            <li><strong>Change scene file:</strong> Change which scene file is
+            to be rendered by modifying the text above the "Render Image"
+            button.</li>
+            <li><strong>Save render result:</strong> Save the rendered scene
+                as an image file.</li>
+        </ul>
+
+        <h2 id="challenges">Challenges</h2>
+        <p>The most time-consuming challenges of this project have been:</p>
+        <ol>
+            <li>Casting rays from the eye through the image plane</li>
+            <li>Getting the right light intensities</li>
+            <li>Creating the GUI</li>
+        </ol>
+
+        <h3>
+            Ray casting
+        </h3>
+        <p>
+            Honestly, the most difficult part was getting the rays to go the right
+            direction out of the eye. I spent a significant amount of time working
+            on this, including coming up with some Mathematica visualizations to
+            make sure the rays were going the correct directions and looked like
+            a real camera frustrum. I thought I had it right for a long time...
+            and then once I tried to render some of the scenes that there were
+            given sample images for. It turns out I had forgotten to convert to
+            radians for my camera half-angle, which was leading to very bizzare
+            reactions when that variable changed.
+        </p>
+
+        <h3>
+            Light intensities
+        </h3>
+        <p>
+            For a while, my light calculations were all resulting in an extremely
+            bright image. It turned out that I was clamping my colors, but then
+            multiplying by a extra factor in the diffuse component of the light
+            calculation.
+        </p>
+
+        <h3>
+            Creating the GUI
+        </h3>
+        <p>
+            <strong>Warning:</strong> the GUI will break if you supply a
+            different resolution from the one you loaded the application with.
+            I feel like every homework so far, at least one of my challenges
+            has been Rust-related... just the pains of using a relatively new
+            language I suppose. This time, I had trouble because there really
+            aren't many good GUI toolkits for Rust. The one I used (<a
+                href="https://crates.io/crates/conrod">conrod</a>) is pretty
+            massive, and requires a significant amount of boilerplate to even
+            render a simple canvas. Additionally, it forces the use of a
+                particular graphics framework (<a
+                    href="https://crates.io/crates/glium">glium</a>), which I
+                am not too fond of. If I were to start this part again, I
+                would probably generate Rust bindings for Nanogui or some
+                other C++ GUI library.
+        </p>
+
+        <h2 id="implementation-details">Implementation Details</h2>
+        <p>This project is implemented in pure <a
+            href="https://www.rust-lang.org">Rust</a>, and contains a custom
+        Vector struct authored by me, since the use of GLM was strongly
+        discouraged. </p>
+        <p>The source code can be viewed on <a
+        href="https://github.umn.edu/herma582/raytracer-5607">GitHub</a>. A zip file
+        for Homework 2 can be <a
+        href="https://github.umn.edu/herma582/raytracer-5607/archive/hw2.zip">downloaded
+        here</a>. An executable (compiled for Linux x86_64) can be <a
+        href="https://github.umn.edu/herma582/raytracer-5607/raw/dev/bin/hw2-5607">downloaded
+        here</a> </p>
+        <p>Automatically generated documentation (rustdocs) can also be found
+        <a href="rustdoc/raytracer_5607/index.html">here</a>.</p>
+
+        <p>The following libraries (crates) were used:</p>
+        <ul>
+          <li> <a href="https://crates.io/crates/conrod">conrod</a> (Graphics,
+              windowing, and GUI components) </li>
+          <li> <a href="https://crates.io/crates/image">image</a> (Image
+              loading/saving) </li>
+          <li> <a href="https://crates.io/crates/clap">clap</a> (Argument
+              parsing) </li>
+        </ul>
+
+        <h2 id="video">Video</h2>
+        <video src="assets/vid/demo.ogv" controls>
+            Sorry, the video won't work in your browser. Please <a
+            href="https://github.umn.edu/herma582/raytracer-5607/docs/assets/vid/demo.ogv">download
+            it here</a>, and notify me (<code>herma582{at}umn{dot}edu</code>) so
+            I can fix it in the future.
+        </video>
+
+        <h2 id="images">Images</h2>
+        <figure class="nocount">
+            <img src="./assets/img/gui_screenshot.png" alt="GUI screenshot" /><figcaption>GUI screenshot</figcaption>
+        </figure>
+        <figure class="nocount">
+            <img src="./assets/img/bear.bmp" alt="Bear test image"
+            /><figcaption>Bear test image</figcaption>
+        </figure>
+        <figure class="nocount">
+            <img src="./assets/img/spheres1.bmp" alt="Simple spheres test
+            image" /><figcaption>Simple spheres test image</figcaption>
+        </figure>
+        <figure class="nocount">
+            <img src="./assets/img/spheres2.bmp" alt="Slightly more complex
+            spheres test image" /><figcaption>Slightly more complex spheres test image</figcaption>
+        </figure>
+        <figure class="nocount">
+            <img src="./assets/img/raytraced.bmp" alt="Simple ambient sphere"
+            /><figcaption>Ambient sphere</figcaption>
+        </figure>
+    </body>
+      </article>
+</html>

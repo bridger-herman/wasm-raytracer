@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Material","Ray tracing material"]]});

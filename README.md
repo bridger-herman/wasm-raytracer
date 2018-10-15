@@ -1,4 +1,4 @@
-# Assignment 1 - Image processing
+# Assignment 2 - Ray casting
 
 ## Instructions for running the code:
 
@@ -8,7 +8,7 @@
 2. Clone this project's repository:
 
     ```
-    git clone https://github.umn.edu/herma582/hw1-5607.git
+    git clone https://github.umn.edu/herma582/raytracer-5607.git
     ```
 
 3. Run the following command from inside the repository:
@@ -20,7 +20,7 @@
 4. Run the code:
 
     ```
-    cargo run -- <image processing arguments>
+    cargo run -- <scene file>
     ```
 
 ## Executable

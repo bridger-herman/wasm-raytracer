@@ -1,0 +1,108 @@
+@font-face {
+  font-family: Encode;
+  src: url('../fonts/EncodeSansNarrow-700-Bold.ttf');
+}
+/* COLORS
+ * #75A6F0
+ * #2D3F5C
+ * #A6F075
+ * #F075A6
+ * #AA2490
+ * #21262D
+ * #EFEEEE
+*/
+
+body {
+  background-color: #21262D;
+  color: #EFEEEE;
+  font-size: 14pt;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+article {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 0 40px;
+  width: 60%;
+}
+
+a {
+  color: #EFEEEE;
+}
+
+h1 {
+  font-family: Encode;
+}
+
+h2, h3, h4, h5, h6 {
+  font-family: Encode;
+  font-weight: normal;
+  margin: 5px 0;
+  margin-top: 15px;
+}
+
+p {
+  margin-top: 0px;
+}
+
+article img {
+  width: 75%;
+  align-self: center;
+}
+
+article * {
+  text-align: left;
+}
+
+article h1 {
+  font-size: 30pt;
+  padding-bottom: 10px;
+  border-bottom: #EFEEEE 2px dotted;
+}
+
+article p {
+  margin-bottom: 10px;
+}
+
+article figure {
+  margin-bottom: 10px;
+}
+
+article ul {
+  margin: 0;
+}
+article ol {
+  margin: 0;
+}
+
+.half-width {
+  width: 50%;
+}
+
+pre {
+  border-bottom: 5px solid #EFEEEE;
+  padding: 1% 6%;
+  margin: 1%;
+  background-color: #2D3F5C;
+}
+
+.tiled-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+.tiled-list li {
+  border-bottom: 5px solid #EFEEEE;
+  padding: 1% 6%;
+  margin: 1%;
+  background-color: #2D3F5C;
+  width: 35%;
+}
+.tiled-list li img {
+  width: 100%;
+}

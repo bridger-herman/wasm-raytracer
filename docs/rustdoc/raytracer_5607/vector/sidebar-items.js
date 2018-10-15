@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["MAX_VECTOR3",""]],"struct":[["Vector3","3 dimensional vector"]]});
