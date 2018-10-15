@@ -21,7 +21,9 @@ pub mod sphere;
 pub mod vector;
 
 use conrod::backend::glium::glium::{self, Surface};
-use conrod::{color, widget, Labelable, Positionable, Sizeable, Widget};
+use conrod::{
+    color, widget, Colorable, Labelable, Positionable, Sizeable, Widget,
+};
 
 const TITLE: &str = "Ray Tracer";
 
@@ -32,11 +34,12 @@ fn main() {
         (@arg scene_file: +required)
     ).get_matches();
 
-    let scene_file_path = matches
+    let mut scene_file_path = matches
         .value_of("scene_file")
-        .expect("Scene file not found");
+        .expect("Scene file not found")
+        .to_string();
 
-    let scene = scene::Scene::from_file(scene_file_path);
+    let scene = scene::Scene::from_file(scene_file_path.as_str());
 
     let rt = ray_tracer::RayTracer;
     let mut rendered = rt.render(&scene);
@@ -54,7 +57,7 @@ fn main() {
 
     // Create the UI iteself
     let mut ui = conrod::UiBuilder::new([window_size.0, window_size.1]).build();
-    widget_ids!(struct Ids { rendered_img, render_button });
+    widget_ids!(struct Ids { rendered_img, render_button, scene_file });
     let ids = Ids::new(ui.widget_id_generator());
 
     // Add the font
@@ -123,7 +126,25 @@ fn main() {
             .set(ids.render_button, ui)
             .was_clicked()
         {
-            rendered = render_img(&rt, scene_file_path);
+            rendered = render_img(&rt, scene_file_path.as_str());
+            let raw_image = glium::texture::RawImage2d::from_raw_rgba_reversed(
+                &rendered.to_bytes(),
+                (rendered.width as u32, rendered.height as u32),
+            );
+            let texture =
+                glium::texture::Texture2d::new(&display, raw_image).unwrap();
+            image_map
+                .replace(rendered_img, texture)
+                .expect("Couldn't get image");
+        }
+
+        if let Some(edit) = widget::TextEdit::new(scene_file_path.as_str())
+            .color(color::WHITE)
+            .mid_top_with_margin_on(ids.render_button, -30.0)
+            .center_justify()
+            .set(ids.scene_file, ui)
+        {
+            scene_file_path = edit;
         }
 
         if let Some(primitives) = ui.draw_if_changed() {
