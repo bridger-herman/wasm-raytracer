@@ -2,6 +2,7 @@
 
 use intersection::Intersection;
 use material::Material;
+use objects::object::Object;
 use ray::Ray;
 use vector::Vector3;
 
@@ -22,8 +23,10 @@ impl Sphere {
             material,
         }
     }
+}
 
-    pub fn intersects(&self, ray: &Ray) -> Option<Intersection> {
+impl Object for Sphere {
+    fn intersects(&self, ray: &Ray) -> Option<Intersection> {
         // Solve a quadratic to see if the ray intersects the sphere
         let start_to_center = ray.start - self.position;
         let a = ray.direction.dot(&ray.direction);
@@ -48,5 +51,9 @@ impl Sphere {
         } else {
             None
         }
+    }
+
+    fn material(&self) -> &Material {
+        &self.material
     }
 }

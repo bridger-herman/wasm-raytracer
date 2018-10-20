@@ -9,8 +9,10 @@ use lights::directional_light::DirectionalLight;
 use lights::light::Light;
 use lights::point_light::PointLight;
 use material::Material;
+use objects::object::Object;
+use objects::sphere::Sphere;
+use objects::triangle::Triangle;
 use pixel::Pixel;
-use sphere::Sphere;
 use vector::Vector3;
 
 #[derive(Debug)]
@@ -27,8 +29,8 @@ pub struct Scene {
     /// The background color
     pub background: Pixel,
 
-    /// All the spheres in the scene
-    pub spheres: Vec<Sphere>,
+    /// All the objects in the scene
+    pub objects: Vec<Box<Object>>,
 
     /// Ambient lighting in a scene
     pub ambient_light: Pixel,
@@ -47,7 +49,7 @@ impl Default for Scene {
             resolution: (640, 480),
             output_image: String::from("./raytraced.bmp"),
             background: Pixel::from_rgb(0.0, 0.0, 0.0),
-            spheres: Vec::new(),
+            objects: Vec::new(),
             ambient_light: Pixel::from_rgb(0.0, 0.0, 0.0),
             lights: Vec::new(),
             max_depth: 5.0,
@@ -74,6 +76,10 @@ impl Scene {
 
         let mut scene = Self::default();
         let mut current_material = Material::default();
+
+        let mut vertices = Vec::new();
+        let mut vertices_so_far = 0;
+        let mut max_vertices = None;
 
         for line in &tokens_per_line {
             if line.is_empty() {
@@ -104,11 +110,11 @@ impl Scene {
                     let float_tokens = parse_full_slice(&line[1..]);
                     let position = Vector3::from(&float_tokens[..3]);
                     let radius = float_tokens[3];
-                    scene.spheres.push(Sphere::new(
+                    scene.objects.push(Box::new(Sphere::new(
                         radius,
                         position,
                         current_material.clone(),
-                    ));
+                    )));
                 }
                 "material" => {
                     assert_eq!(line.len(), 15);
@@ -152,6 +158,36 @@ impl Scene {
                 "max_depth" => {
                     assert_eq!(line.len(), 2);
                     scene.max_depth = line[1].parse::<f64>().unwrap_or(5.0);
+                }
+                "max_vertices" => {
+                    assert_eq!(line.len(), 2);
+                    max_vertices = Some(
+                        line[1]
+                            .parse::<usize>()
+                            .expect("Max vertices must be an integer"),
+                    );
+                    vertices.resize(max_vertices.unwrap(), Vector3::default());
+                }
+                "vertex" => {
+                    assert_eq!(line.len(), 4);
+                    max_vertices.expect("Max vertices must be provided before specifying any vertices");
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    vertices[vertices_so_far] =
+                        Vector3::from(float_tokens.as_slice());
+                    vertices_so_far += 1;
+                }
+                "triangle" => {
+                    assert_eq!(line.len(), 4);
+                    let indices: Vec<usize> = parse_full_slice(&line[1..]);
+                    for t in &indices {
+                        assert!(t < &vertices.len());
+                    }
+                    scene.objects.push(Box::new(Triangle::new(
+                        current_material.clone(),
+                        vertices[indices[0]],
+                        vertices[indices[1]],
+                        vertices[indices[2]],
+                    )));
                 }
                 _ => (),
             }

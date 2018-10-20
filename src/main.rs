@@ -11,11 +11,11 @@ pub mod image;
 pub mod intersection;
 pub mod lights;
 pub mod material;
+pub mod objects;
 pub mod pixel;
 pub mod ray;
 pub mod ray_tracer;
 pub mod scene;
-pub mod sphere;
 
 // TODO remove this
 pub mod vector;

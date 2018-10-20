@@ -2,10 +2,10 @@
 
 use image::Image;
 use intersection::Intersection;
+use objects::object::Object;
 use pixel::Pixel;
 use ray::Ray;
 use scene::Scene;
-use sphere::Sphere;
 use vector::MAX_VECTOR3;
 
 pub struct RayTracer;
@@ -45,8 +45,8 @@ impl RayTracer {
                 let mut closest_intersection =
                     Intersection::new(MAX_VECTOR3, MAX_VECTOR3);
 
-                for sphere in &scene.spheres {
-                    if let Some(intersection) = sphere.intersects(&ray) {
+                for object in &scene.objects {
+                    if let Some(intersection) = object.intersects(&ray) {
                         let distance =
                             (intersection.point - ray.start).length();
                         if distance
@@ -57,7 +57,7 @@ impl RayTracer {
                                 col,
                                 self.calculate_illumination(
                                     scene,
-                                    &sphere,
+                                    object,
                                     &intersection,
                                 ),
                             );
@@ -82,19 +82,19 @@ impl RayTracer {
     fn calculate_illumination(
         &self,
         scene: &Scene,
-        sphere: &Sphere,
+        object: &Box<Object>,
         intersection: &Intersection,
     ) -> Pixel {
         // Start with ambient light
         let mut sum = Pixel::from_rgba_unclamped(0.0, 0.0, 0.0, 0.0);
-        sum = sum + sphere.material.ambient * scene.ambient_light;
+        sum = sum + object.material().ambient * scene.ambient_light;
 
         for light in &scene.lights {
             let to_light = light.to_light(intersection);
 
             // Calculate shadows
-            let in_shadow = scene.spheres.iter().any(|sphere| {
-                sphere
+            let in_shadow = scene.objects.iter().any(|object| {
+                object
                     .intersects(&Ray::new(
                         intersection.point,
                         to_light.normalized(),
@@ -105,12 +105,12 @@ impl RayTracer {
                 continue;
             }
 
-            sum = sum + light.diffuse(&intersection, &sphere.material);
+            sum = sum + light.diffuse(&intersection, &object.material());
 
             sum = sum + light.specular(
                 &scene.camera,
                 intersection,
-                &sphere.material,
+                &object.material(),
             );
         }
 
