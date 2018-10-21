@@ -39,7 +39,7 @@ impl Triangle {
 impl Object for Triangle {
     fn intersects(&self, ray: &Ray) -> Option<Intersection> {
         let d = self.v1.dot(&self.normal);
-        let t = -(ray.start.dot(&self.normal) + d)
+        let t = -(ray.start.dot(&self.normal) - d)
             / (ray.direction.dot(&self.normal));
         if t >= EPSILON {
             let p = ray.eval(t);
