@@ -15,7 +15,9 @@ pub struct Triangle {
     pub v1: Vector3,
     pub v2: Vector3,
     pub v3: Vector3,
-    pub normal: Vector3,
+    pub n1: Vector3,
+    pub n2: Vector3,
+    pub n3: Vector3,
     pub material: Material,
 }
 
@@ -25,12 +27,17 @@ impl Triangle {
         v1: Vector3,
         v2: Vector3,
         v3: Vector3,
+        n1: Vector3,
+        n2: Vector3,
+        n3: Vector3,
     ) -> Self {
         Self {
             v1,
             v2,
             v3,
-            normal: (v1 - v2).cross(&(v3 - v2)).normalized(), // TODO: Fix this
+            n1,
+            n2,
+            n3,
             material,
         }
     }
@@ -38,16 +45,15 @@ impl Triangle {
 
 impl Object for Triangle {
     fn intersects(&self, ray: &Ray) -> Option<Intersection> {
-        let d = self.v1.dot(&self.normal);
-        let t = -(ray.start.dot(&self.normal) - d)
-            / (ray.direction.dot(&self.normal));
+        let d = self.v1.dot(&self.n1);
+        let t = -(ray.start.dot(&self.n1) - d) / (ray.direction.dot(&self.n1));
         if t >= EPSILON {
             let p = ray.eval(t);
             if same_side(p, self.v1, self.v2, self.v3)
                 && same_side(p, self.v2, self.v1, self.v3)
                 && same_side(p, self.v3, self.v1, self.v2)
             {
-                Some(Intersection::new(self.normal, p))
+                Some(Intersection::new(self.n1, p))
             } else {
                 None
             }

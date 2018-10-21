@@ -81,6 +81,10 @@ impl Scene {
         let mut vertices_so_far = 0;
         let mut max_vertices = None;
 
+        let mut normals = Vec::new();
+        let mut normals_so_far = 0;
+        let mut max_normals = None;
+
         for line in &tokens_per_line {
             if line.is_empty() {
                 continue;
@@ -168,6 +172,15 @@ impl Scene {
                     );
                     vertices.resize(max_vertices.unwrap(), Vector3::default());
                 }
+                "max_normals" => {
+                    assert_eq!(line.len(), 2);
+                    max_normals = Some(
+                        line[1]
+                            .parse::<usize>()
+                            .expect("Max normals must be an integer"),
+                    );
+                    normals.resize(max_normals.unwrap(), Vector3::default());
+                }
                 "vertex" => {
                     assert_eq!(line.len(), 4);
                     max_vertices.expect("Max vertices must be provided before specifying any vertices");
@@ -176,17 +189,55 @@ impl Scene {
                         Vector3::from(float_tokens.as_slice());
                     vertices_so_far += 1;
                 }
+                "normal" => {
+                    assert_eq!(line.len(), 4);
+                    max_normals.expect("Max normals must be provided before specifying any normals");
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    normals[normals_so_far] =
+                        Vector3::from(float_tokens.as_slice());
+                    normals_so_far += 1;
+                }
                 "triangle" => {
                     assert_eq!(line.len(), 4);
                     let indices: Vec<usize> = parse_full_slice(&line[1..]);
                     for t in &indices {
                         assert!(t < &vertices.len());
                     }
-                    scene.objects.push(Box::new(Triangle::new(
-                        current_material.clone(),
+                    let (v1, v2, v3) = (
                         vertices[indices[0]],
                         vertices[indices[1]],
                         vertices[indices[2]],
+                    );
+                    let normal = (v1 - v2).cross(&(v3 - v2)).normalized();
+                    scene.objects.push(Box::new(Triangle::new(
+                        current_material.clone(),
+                        v1,
+                        v2,
+                        v3,
+                        normal,
+                        normal,
+                        normal,
+                    )));
+                }
+                "normal_triangle" => {
+                    assert_eq!(line.len(), 7);
+                    let vert_indices: Vec<usize> =
+                        parse_full_slice(&line[1..4]);
+                    for t in &vert_indices {
+                        assert!(t < &vertices.len());
+                    }
+                    let norm_indices: Vec<usize> = parse_full_slice(&line[4..]);
+                    for t in &norm_indices {
+                        assert!(t < &normals.len());
+                    }
+                    scene.objects.push(Box::new(Triangle::new(
+                        current_material.clone(),
+                        vertices[vert_indices[0]],
+                        vertices[vert_indices[1]],
+                        vertices[vert_indices[2]],
+                        normals[norm_indices[0]],
+                        normals[norm_indices[1]],
+                        normals[norm_indices[2]],
                     )));
                 }
                 _ => (),
