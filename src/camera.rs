@@ -30,6 +30,11 @@ impl Camera {
         let direction = Vector3::from(&parameters[3..6]).normalized();
         let up = Vector3::from(&parameters[6..9]).normalized();
         let right = up.cross(&direction).normalized();
+        let up = if direction.dot(&up) != 0.0 {
+            direction.cross(&right)
+        } else {
+            up
+        };
         Self {
             position: Vector3::from(&parameters[0..3]),
             direction,
