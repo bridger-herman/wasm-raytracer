@@ -9,6 +9,8 @@ pub const MAX_VECTOR3: Vector3 = Vector3 {
     z: f64::MAX,
 };
 
+const EPSILON: f32 = 0.000001;
+
 /// 3 dimensional vector
 #[derive(Default, Debug, PartialEq, Clone, Copy)]
 pub struct Vector3 {
@@ -109,6 +111,10 @@ impl Vector3 {
     pub fn reflect(self, normal: &Self) -> Self {
         self - (*normal * self.dot(normal)) * 2.0
     }
+
+    pub fn angle(&self, other: &Self) -> f64 {
+        self.normalized().dot(&other.normalized()).acos()
+    }
 }
 
 #[cfg(test)]
@@ -174,5 +180,14 @@ mod tests {
         assert_eq!(reflect.x as f32, reflect_glm.x);
         assert_eq!(reflect.y as f32, reflect_glm.y);
         assert_eq!(reflect.z as f32, reflect_glm.z);
+    }
+
+    #[test]
+    fn angle() {
+        let (a_glm, b_glm, a, b) = make_vectors();
+
+        let angle_glm = glm::ext::angle(a_glm, b_glm);
+        let angle = a.angle(&b);
+        assert!((angle as f32 - angle_glm).abs() < EPSILON);
     }
 }
