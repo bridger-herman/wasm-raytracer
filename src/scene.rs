@@ -39,7 +39,7 @@ pub struct Scene {
     pub lights: Vec<Box<Light>>,
 
     /// The max depth of a ray
-    pub max_depth: f64,
+    pub max_depth: usize,
 }
 
 impl Default for Scene {
@@ -52,7 +52,7 @@ impl Default for Scene {
             objects: Vec::new(),
             ambient_light: Pixel::from_rgb(0.0, 0.0, 0.0),
             lights: Vec::new(),
-            max_depth: 5.0,
+            max_depth: 5,
         }
     }
 }
@@ -161,7 +161,7 @@ impl Scene {
                 }
                 "max_depth" => {
                     assert_eq!(line.len(), 2);
-                    scene.max_depth = line[1].parse::<f64>().unwrap_or(5.0);
+                    scene.max_depth = line[1].parse::<usize>().unwrap_or(5);
                 }
                 "max_vertices" => {
                     assert_eq!(line.len(), 2);

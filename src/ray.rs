@@ -19,4 +19,11 @@ impl Ray {
     pub fn eval(&self, t: f64) -> Vector3 {
         self.start + self.direction * t
     }
+
+    pub fn reflect(&self, new_start: Vector3, normal: Vector3) -> Self {
+        Self {
+            start: new_start,
+            direction: self.direction.reflect(&normal).normalized(),
+        }
+    }
 }

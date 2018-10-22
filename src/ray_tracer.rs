@@ -42,7 +42,7 @@ impl RayTracer {
                 let ray_direction =
                     image_plane_location - scene.camera.position;
                 let ray = Ray::new(scene.camera.position, ray_direction);
-                let color = self.trace_ray(scene, &ray);
+                let color = self.trace_ray(scene, &ray, 0);
                 img.set_pixel(row, col, color);
 
                 done += 1;
@@ -59,10 +59,16 @@ impl RayTracer {
         img
     }
 
-    fn trace_ray(&self, scene: &Scene, ray: &Ray) -> Pixel {
+    fn trace_ray(&self, scene: &Scene, ray: &Ray, depth: usize) -> Pixel {
         let mut closest_intersection =
             Intersection::new(MAX_VECTOR3, MAX_VECTOR3);
+
         let mut color = scene.background;
+
+        if depth > scene.max_depth {
+            return color;
+        }
+
         for object in &scene.objects {
             if let Some(intersection) = object.intersects(&ray) {
                 let distance = (intersection.point - ray.start).length();
@@ -72,6 +78,8 @@ impl RayTracer {
                         scene,
                         object,
                         &intersection,
+                        ray,
+                        depth,
                     );
                     closest_intersection = intersection;
                 }
@@ -85,9 +93,12 @@ impl RayTracer {
         scene: &Scene,
         object: &Box<Object>,
         intersection: &Intersection,
+        ray: &Ray,
+        depth: usize,
     ) -> Pixel {
         // Start with ambient light
         let mut sum = Pixel::from_rgba_unclamped(0.0, 0.0, 0.0, 0.0);
+
         sum = sum + object.material().ambient * scene.ambient_light;
 
         for light in &scene.lights {
@@ -114,6 +125,12 @@ impl RayTracer {
                 &object.material(),
             );
         }
+
+        let reflected =
+            ray.reflect(intersection.point, intersection.surface_normal);
+        sum = sum
+            + object.material().specular
+                * self.trace_ray(scene, &reflected, depth + 1);
 
         sum
     }
