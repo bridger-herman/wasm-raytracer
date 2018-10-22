@@ -42,29 +42,9 @@ impl RayTracer {
                 let ray_direction =
                     image_plane_location - scene.camera.position;
                 let ray = Ray::new(scene.camera.position, ray_direction);
-                let mut closest_intersection =
-                    Intersection::new(MAX_VECTOR3, MAX_VECTOR3);
+                let color = self.trace_ray(scene, &ray);
+                img.set_pixel(row, col, color);
 
-                for object in &scene.objects {
-                    if let Some(intersection) = object.intersects(&ray) {
-                        let distance =
-                            (intersection.point - ray.start).length();
-                        if distance
-                            < (closest_intersection.point - ray.start).length()
-                        {
-                            img.set_pixel(
-                                row,
-                                col,
-                                self.calculate_illumination(
-                                    scene,
-                                    object,
-                                    &intersection,
-                                ),
-                            );
-                            closest_intersection = intersection;
-                        }
-                    }
-                }
                 done += 1;
                 if done % 10000 == 0 {
                     println!(
@@ -77,6 +57,27 @@ impl RayTracer {
         }
 
         img
+    }
+
+    fn trace_ray(&self, scene: &Scene, ray: &Ray) -> Pixel {
+        let mut closest_intersection =
+            Intersection::new(MAX_VECTOR3, MAX_VECTOR3);
+        let mut color = scene.background;
+        for object in &scene.objects {
+            if let Some(intersection) = object.intersects(&ray) {
+                let distance = (intersection.point - ray.start).length();
+                if distance < (closest_intersection.point - ray.start).length()
+                {
+                    color = self.calculate_illumination(
+                        scene,
+                        object,
+                        &intersection,
+                    );
+                    closest_intersection = intersection;
+                }
+            }
+        }
+        color
     }
 
     fn calculate_illumination(
