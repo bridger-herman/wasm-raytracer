@@ -68,7 +68,13 @@ impl Scene {
         let scene_lines: Vec<_> = scene_contents
             .lines()
             .filter(|&line| !line.starts_with('#') && !line.is_empty())
-            .collect();
+            .map(|line| {
+                if let Some(index) = line.find('#') {
+                    &line[..index]
+                } else {
+                    line
+                }
+            }).collect();
         let tokens_per_line: Vec<Vec<_>> = scene_lines
             .iter()
             .map(|&line| line.split_whitespace().collect())
