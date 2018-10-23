@@ -63,11 +63,11 @@ impl RayTracer {
         let mut closest_intersection =
             Intersection::new(MAX_VECTOR3, MAX_VECTOR3);
 
-        let mut color = scene.background;
-
         if depth > scene.max_depth {
-            return color;
+            return Pixel::from_rgb(0.0, 0.0, 0.0);
         }
+
+        let mut color = scene.background;
 
         for object in &scene.objects {
             if let Some(intersection) = object.intersects(&ray) {
@@ -131,6 +131,15 @@ impl RayTracer {
         sum = sum
             + object.material().specular
                 * self.trace_ray(scene, &reflected, depth + 1);
+
+        let refracted = ray.refract(
+            intersection.point,
+            intersection.surface_normal,
+            object.material().ior,
+        );
+        sum = sum
+            + object.material().transmissive
+                * self.trace_ray(scene, &refracted, depth + 1);
 
         sum
     }

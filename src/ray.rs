@@ -26,4 +26,16 @@ impl Ray {
             direction: self.direction.reflect(&normal).normalized(),
         }
     }
+
+    pub fn refract(
+        &self,
+        new_start: Vector3,
+        normal: Vector3,
+        ior: f64,
+    ) -> Self {
+        Self {
+            start: new_start,
+            direction: self.direction.refract(normal, ior).normalized(),
+        }
+    }
 }

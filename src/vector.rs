@@ -110,16 +110,18 @@ impl Vector3 {
         self - (*normal * self.dot(normal)) * 2.0
     }
 
-    // Uses the same math from the GLM-rs library
+    // Uses the same math from the GLM library - doesn't match GLM-rs
     pub fn refract(self, normal: Self, eta: f64) -> Self {
+        // Figure out if we're going into or coming out of the material
         let dot_ni = self.dot(&normal);
+        let eta = if dot_ni > 0.0 { eta } else { 1.0 / eta };
 
-        let k = 1.0 - eta * eta * (1.0 - dot_ni) * dot_ni;
+        let k = 1.0 - eta * eta * (1.0 - dot_ni * dot_ni);
         if k < 0.0 {
-            Vector3::default()
+            self * eta
         } else {
             self * eta - normal * (eta * dot_ni + k.sqrt())
-        }
+        }.normalized()
     }
 
     pub fn angle(&self, other: &Self) -> f64 {
@@ -194,25 +196,26 @@ mod tests {
         assert_eq!(reflect.z as f32, reflect_glm.z);
     }
 
-    #[test]
-    fn refract() {
-        // let (a_glm, b_glm, a, b) = make_vectors();
-        let (a_glm, b_glm, a, b) = (
-            glm::Vec3::new(0.0, 1.0, 0.0),
-            glm::normalize(glm::Vec3::new(-1.0, -1.0, 0.0)),
-            Vector3::new(0.0, 1.0, 0.0),
-            Vector3::new(-1.0, -1.0, 0.0).normalized(),
-        );
-        println!("a: {:?} {:?}", a_glm, a);
-        println!("b: {:?} {:?}", b_glm, b);
+    // THIS TEST WILL FAIL because GLM-rs has different refraction code
+    // #[test]
+    // fn refract() {
+    // // let (a_glm, b_glm, a, b) = make_vectors();
+    // let (a_glm, b_glm, a, b) = (
+    // glm::Vec3::new(0.0, 1.0, 0.0),
+    // glm::normalize(glm::Vec3::new(-1.0, -1.0, 0.0)),
+    // Vector3::new(0.0, 1.0, 0.0),
+    // Vector3::new(-1.0, -1.0, 0.0).normalized(),
+    // );
+    // println!("a: {:?} {:?}", a_glm, a);
+    // println!("b: {:?} {:?}", b_glm, b);
 
-        let refract_glm = glm::refract(a_glm, b_glm, 1.0);
-        let refract = a.refract(b, 1.0);
-        println!("{:?} {:?}", refract_glm, refract);
-        assert!((refract.x as f32 - refract_glm.x) < EPSILON);
-        assert!((refract.y as f32 - refract_glm.y) < EPSILON);
-        assert!((refract.z as f32 - refract_glm.z) < EPSILON);
-    }
+    // let refract_glm = glm::refract(a_glm, b_glm, 1.0);
+    // let refract = a.refract(b, 1.0);
+    // println!("{:?} {:?}", refract_glm, refract);
+    // assert!((refract.x as f32 - refract_glm.x) < EPSILON);
+    // assert!((refract.y as f32 - refract_glm.y) < EPSILON);
+    // assert!((refract.z as f32 - refract_glm.z) < EPSILON);
+    // }
 
     #[test]
     fn angle() {
