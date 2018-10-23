@@ -1,5 +1,6 @@
 //! A single triangle
 
+use camera::Camera;
 use intersection::Intersection;
 use material::Material;
 use objects::object::Object;
@@ -44,23 +45,28 @@ impl Triangle {
         }
     }
 
-    pub fn single_normal(
+    pub fn guess_normal(
         material: Material,
         v1: Vector3,
         v2: Vector3,
         v3: Vector3,
-        n: Vector3,
+        camera: &Camera,
     ) -> Self {
-        Self {
+        let guessed_normal = (v1 - v2).cross(&(v3 - v2)).normalized();
+        let guessed_normal = if guessed_normal.dot(&camera.direction) < 0.0 {
+            guessed_normal
+        } else {
+            -guessed_normal
+        };
+        Self::new(
+            material,
             v1,
             v2,
             v3,
-            n1: n,
-            n2: n,
-            n3: n,
-            material,
-            plane_normal: n,
-        }
+            guessed_normal,
+            guessed_normal,
+            guessed_normal,
+        )
     }
 }
 

@@ -208,13 +208,12 @@ impl Scene {
                         vertices[indices[1]],
                         vertices[indices[2]],
                     );
-                    let normal = (v1 - v2).cross(&(v3 - v2)).normalized();
-                    scene.objects.push(Box::new(Triangle::single_normal(
+                    scene.objects.push(Box::new(Triangle::guess_normal(
                         current_material.clone(),
                         v1,
                         v2,
                         v3,
-                        normal,
+                        &scene.camera,
                     )));
                 }
                 "normal_triangle" => {
