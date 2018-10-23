@@ -194,7 +194,7 @@ impl Scene {
                     max_normals.expect("Max normals must be provided before specifying any normals");
                     let float_tokens = parse_full_slice(&line[1..]);
                     normals[normals_so_far] =
-                        Vector3::from(float_tokens.as_slice());
+                        Vector3::from(float_tokens.as_slice()).normalized();
                     normals_so_far += 1;
                 }
                 "triangle" => {
@@ -209,13 +209,11 @@ impl Scene {
                         vertices[indices[2]],
                     );
                     let normal = (v1 - v2).cross(&(v3 - v2)).normalized();
-                    scene.objects.push(Box::new(Triangle::new(
+                    scene.objects.push(Box::new(Triangle::single_normal(
                         current_material.clone(),
                         v1,
                         v2,
                         v3,
-                        normal,
-                        normal,
                         normal,
                     )));
                 }
