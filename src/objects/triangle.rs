@@ -94,6 +94,10 @@ impl Object for Triangle {
     fn material(&self) -> &Material {
         &self.material
     }
+
+    fn info(&self) -> String {
+        format!("Triangle: {:?} {:?} {:?}", self.v1, self.v2, self.v3)
+    }
 }
 
 fn same_side(p1: Vector3, p2: Vector3, a: Vector3, b: Vector3) -> bool {

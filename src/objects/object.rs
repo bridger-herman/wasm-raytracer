@@ -12,10 +12,12 @@ pub trait Object {
     fn intersects(&self, ray: &Ray) -> Option<Intersection>;
 
     fn material(&self) -> &Material;
+
+    fn info(&self) -> String;
 }
 
 impl fmt::Debug for Object {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Object")
+        write!(f, "{}", self.info())
     }
 }

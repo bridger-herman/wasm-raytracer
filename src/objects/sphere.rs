@@ -56,4 +56,8 @@ impl Object for Sphere {
     fn material(&self) -> &Material {
         &self.material
     }
+
+    fn info(&self) -> String {
+        format!("Sphere: {:?} {:?}", self.position, self.radius)
+    }
 }
