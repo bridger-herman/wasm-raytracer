@@ -102,14 +102,15 @@ impl RayTracer {
         sum = sum + object.material().ambient * scene.ambient_light;
 
         for light in &scene.lights {
-            let to_light = light.to_light(intersection);
+            let to_light = light.direction_to_light(intersection);
 
             // Calculate shadows
             let in_shadow = scene.objects.iter().any(|object| {
                 object
-                    .intersects(&Ray::new(
+                    .intersects(&Ray::with_t_max(
                         intersection.point,
                         to_light.normalized(),
+                        light.distance_to_light(intersection),
                     )).is_some()
             });
 

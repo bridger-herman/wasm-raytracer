@@ -20,8 +20,12 @@ impl DirectionalLight {
 }
 
 impl Light for DirectionalLight {
-    fn to_light(&self, _intersection: &Intersection) -> Vector3 {
-        -self.direction
+    fn direction_to_light(&self, _intersection: &Intersection) -> Vector3 {
+        -(self.direction.normalized())
+    }
+
+    fn distance_to_light(&self, _intersection: &Intersection) -> f64 {
+        ::std::f64::MAX
     }
 
     fn diffuse(
@@ -29,11 +33,9 @@ impl Light for DirectionalLight {
         intersection: &Intersection,
         material: &Material,
     ) -> Pixel {
-        let to_light = self.to_light(intersection);
-
         let angle = intersection
             .surface_normal
-            .dot(&to_light.normalized())
+            .dot(&self.direction_to_light(intersection))
             .max(0.0);
         self.color * material.diffuse * angle
     }
@@ -44,11 +46,10 @@ impl Light for DirectionalLight {
         intersection: &Intersection,
         material: &Material,
     ) -> Pixel {
-        let to_light = self.to_light(intersection);
-
         let view = (camera.position - intersection.point).normalized();
-        let reflection =
-            to_light.normalized().reflect(&intersection.surface_normal);
+        let reflection = self
+            .direction_to_light(intersection)
+            .reflect(&intersection.surface_normal);
         let phong_dot =
             view.dot(&reflection).min(0.0).powf(material.phong_power);
         self.color.clamp() * material.specular * phong_dot

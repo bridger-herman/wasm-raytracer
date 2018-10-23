@@ -41,10 +41,16 @@ impl Object for Sphere {
             let t2 = (-b - discriminant.sqrt()) / (2.0 * a);
             let p1 = ray.eval(t1);
             let p2 = ray.eval(t2);
-            if t1 < t2 && t1 > EPSILON {
-                Some(Intersection::new((p1 - self.position).normalized(), p1))
-            } else if t1 >= t2 && t2 > EPSILON {
-                Some(Intersection::new((p2 - self.position).normalized(), p2))
+            if p1.is_some() && t1 < t2 && t1 > EPSILON {
+                Some(Intersection::new(
+                    (p1.unwrap() - self.position).normalized(),
+                    p1.unwrap(),
+                ))
+            } else if p2.is_some() && t1 >= t2 && t2 > EPSILON {
+                Some(Intersection::new(
+                    (p2.unwrap() - self.position).normalized(),
+                    p2.unwrap(),
+                ))
             } else {
                 None
             }

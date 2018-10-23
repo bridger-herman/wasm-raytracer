@@ -71,6 +71,10 @@ impl Object for Triangle {
             / (ray.direction.dot(&self.plane_normal));
         if t >= EPSILON {
             let p = ray.eval(t);
+            if p.is_none() {
+                return None;
+            }
+            let p = p.unwrap();
             if same_side(p, self.v1, self.v2, self.v3)
                 && same_side(p, self.v2, self.v1, self.v3)
                 && same_side(p, self.v3, self.v1, self.v2)
@@ -82,7 +86,6 @@ impl Object for Triangle {
                     ),
                     p,
                 ))
-            // Some(Intersection::new(self.plane_normal, p))
             } else {
                 None
             }

@@ -12,7 +12,10 @@ use vector::Vector3;
 
 pub trait Light {
     /// Calculate the direction of the light from the intersection
-    fn to_light(&self, intersection: &Intersection) -> Vector3;
+    fn direction_to_light(&self, intersection: &Intersection) -> Vector3;
+
+    /// Calculate the distance to the light from the intersection
+    fn distance_to_light(&self, intersection: &Intersection) -> f64;
 
     /// Calculate the diffuse component
     fn diffuse(
