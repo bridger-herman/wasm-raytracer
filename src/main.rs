@@ -47,7 +47,9 @@ fn main() {
     let mut rendered = rt.render(&scene);
 
     if no_gui {
-        rendered.write(&scene.output_image).expect("Unable to write image");
+        rendered
+            .write(&scene.output_image)
+            .expect("Unable to write image");
         return;
     }
 
@@ -135,7 +137,9 @@ fn main() {
             .set(ids.save_button, ui)
             .was_clicked()
         {
-            rendered.write(&scene.output_image).expect("Unable to write image file");
+            rendered
+                .write(&scene.output_image)
+                .expect("Unable to write image file");
         }
 
         if widget::Button::new()
@@ -159,7 +163,6 @@ fn main() {
                 .replace(rendered_img, texture)
                 .expect("Couldn't get image");
         }
-
 
         if let Some(edit) = widget::TextEdit::new(scene_file_path.as_str())
             .color(color::WHITE)

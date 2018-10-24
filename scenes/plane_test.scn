@@ -1,0 +1,21 @@
+camera 0 2 -5  0 0 1  0 1 0  35
+output_image ./output/plane_test.png
+
+# ground plane
+material 1 1 1 1 0 0 .3 .3 .3  32  0.0 0.0 0.0 1.5
+plane 0 0 0  0 1 0
+
+#green plane
+material 0 .7 0 0 .7 0 .8 .8 .8 16 0.0 0.0 0.0 1.1
+plane 2 0 0  -1 0 0
+
+#blue plane
+material 0 0 1 0 0 1 0 0 0 16 0 0 0 1.0
+plane -2 0 0  1 0 -1
+
+point_light 10 10 10 0 5 -2
+
+ambient_light .25 .25 .25
+background .05 .05 .05
+
+max_depth 5

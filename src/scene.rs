@@ -11,6 +11,7 @@ use lights::point_light::PointLight;
 use lights::spot_light::SpotLight;
 use material::Material;
 use objects::object::Object;
+use objects::plane::Plane;
 use objects::sphere::Sphere;
 use objects::triangle::Triangle;
 use pixel::Pixel;
@@ -233,6 +234,15 @@ impl Scene {
                         v2,
                         v3,
                         &scene.camera,
+                    )));
+                }
+                "plane" => {
+                    assert_eq!(line.len(), 7);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    scene.objects.push(Box::new(Plane::new(
+                        current_material.clone(),
+                        Vector3::from(&float_tokens[..3]),
+                        Vector3::from(&float_tokens[3..]),
                     )));
                 }
                 "normal_triangle" => {
