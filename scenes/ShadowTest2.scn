@@ -2,14 +2,15 @@
 
 #Camera Set-up
 camera 10 10 -10 -.4 -.3 .3 0 1 0 20
-output_image output/ShadowTest.bmp
+output_image output/ShadowTest2.png
 #film_resolution 300 300
 # film_resolution 800 600
 #film_resolution 1024 768
 #film_resolution 1920 1080
 
 
-sphere -1 2.5 -0.5 0.1
+material 0.0 0.56 0.0  0.0 0.56 0.0  0.0 .0 .0  1  0 0 0  1.0
+sphere -1 5.5 -0.5 1.5
 
 #White overhead light
 point_light 8 8 8 -1 2 -.5
@@ -1312,19 +1313,19 @@ normal 0.0 1.0 0.0
 
 
 # Material type -- Green Cube
-material 0.0 0.56 0.0 0.0 0.56 0.0 0.2 .2 .2 1 0 0 0 1.0
-normal_triangle 332 333 334 884 885 886
-normal_triangle 334 333 335 886 885 887
-normal_triangle 334 335 336 888 889 890
-normal_triangle 336 335 337 890 889 891
-normal_triangle 336 337 338 892 893 894
-normal_triangle 338 337 339 894 893 895
-normal_triangle 338 339 332 896 897 898
-normal_triangle 332 339 333 898 897 899
-normal_triangle 333 339 335 900 901 902
-normal_triangle 335 339 337 902 901 903
-normal_triangle 338 332 336 904 905 906
-normal_triangle 336 332 334 906 905 907
+# material 0.0 0.56 0.0 0.0 0.56 0.0 0.2 .2 .2 1 0 0 0 1.0
+# normal_triangle 332 333 334 884 885 886
+# normal_triangle 334 333 335 886 885 887
+# normal_triangle 334 335 336 888 889 890
+# normal_triangle 336 335 337 890 889 891
+# normal_triangle 336 337 338 892 893 894
+# normal_triangle 338 337 339 894 893 895
+# normal_triangle 338 339 332 896 897 898
+# normal_triangle 332 339 333 898 897 899
+# normal_triangle 333 339 335 900 901 902
+# normal_triangle 335 339 337 902 901 903
+# normal_triangle 338 332 336 904 905 906
+# normal_triangle 336 332 334 906 905 907
 
 # Material type -- Brown Table
 material .4 .2 .1 .4 .2 .1 0 0 0 1 0 0 0 1.0
@@ -1341,36 +1342,36 @@ normal_triangle 327 331 330 880 882 883
 
 
 # Material type -- Greenish Post
-material 0.0 0.31 0.31 0.0 0.31 0.31 0 0 0 1 0 0 0 1.0
-normal_triangle 340 341 349 908 909 910
-normal_triangle 340 349 348 908 910 911
-normal_triangle 341 342 350 909 912 913
-normal_triangle 341 350 349 909 913 910
-normal_triangle 342 343 351 912 914 915
-normal_triangle 342 351 350 912 915 913
-normal_triangle 343 344 352 914 916 917
-normal_triangle 343 352 351 914 917 915
-normal_triangle 344 345 353 916 918 919
-normal_triangle 344 353 352 916 919 917
-normal_triangle 345 346 354 918 920 921
-normal_triangle 345 354 353 918 921 919
-normal_triangle 346 347 355 920 922 923
-normal_triangle 346 355 354 920 923 921
-normal_triangle 347 340 348 922 908 911
-normal_triangle 347 348 355 922 911 923
-normal_triangle 341 340 356 909 908 924
-normal_triangle 342 341 356 912 909 924
-normal_triangle 343 342 356 914 912 924
-normal_triangle 344 343 356 916 914 924
-normal_triangle 345 344 356 918 916 924
-normal_triangle 346 345 356 920 918 924
-normal_triangle 347 346 356 922 920 924
-normal_triangle 340 347 356 908 922 924
-normal_triangle 348 349 357 911 910 925
-normal_triangle 349 350 357 910 913 925
-normal_triangle 350 351 357 913 915 925
-normal_triangle 351 352 357 915 917 925
-normal_triangle 352 353 357 917 919 925
-normal_triangle 353 354 357 919 921 925
-normal_triangle 354 355 357 921 923 925
-normal_triangle 355 348 357 923 911 925
+# material 0.0 0.31 0.31 0.0 0.31 0.31 0 0 0 1 0 0 0 1.0
+# normal_triangle 340 341 349 908 909 910
+# normal_triangle 340 349 348 908 910 911
+# normal_triangle 341 342 350 909 912 913
+# normal_triangle 341 350 349 909 913 910
+# normal_triangle 342 343 351 912 914 915
+# normal_triangle 342 351 350 912 915 913
+# normal_triangle 343 344 352 914 916 917
+# normal_triangle 343 352 351 914 917 915
+# normal_triangle 344 345 353 916 918 919
+# normal_triangle 344 353 352 916 919 917
+# normal_triangle 345 346 354 918 920 921
+# normal_triangle 345 354 353 918 921 919
+# normal_triangle 346 347 355 920 922 923
+# normal_triangle 346 355 354 920 923 921
+# normal_triangle 347 340 348 922 908 911
+# normal_triangle 347 348 355 922 911 923
+# normal_triangle 341 340 356 909 908 924
+# normal_triangle 342 341 356 912 909 924
+# normal_triangle 343 342 356 914 912 924
+# normal_triangle 344 343 356 916 914 924
+# normal_triangle 345 344 356 918 916 924
+# normal_triangle 346 345 356 920 918 924
+# normal_triangle 347 346 356 922 920 924
+# normal_triangle 340 347 356 908 922 924
+# normal_triangle 348 349 357 911 910 925
+# normal_triangle 349 350 357 910 913 925
+# normal_triangle 350 351 357 913 915 925
+# normal_triangle 351 352 357 915 917 925
+# normal_triangle 352 353 357 917 919 925
+# normal_triangle 353 354 357 919 921 925
+# normal_triangle 354 355 357 921 923 925
+# normal_triangle 355 348 357 923 911 925

@@ -4,7 +4,7 @@
 #Camera Set-up
 camera 2.8 9 5 -.26 -.78 -.45 0 1 0 20
 output_image ./output/gear.bmp
-#film_resolution 300 300
+# film_resolution 300 300
 film_resolution 800 600
 #film_resolution 1024 768
 #film_resolution 1920 1080
