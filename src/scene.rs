@@ -8,6 +8,7 @@ use camera::Camera;
 use lights::directional_light::DirectionalLight;
 use lights::light::Light;
 use lights::point_light::PointLight;
+use lights::spot_light::SpotLight;
 use material::Material;
 use objects::object::Object;
 use objects::sphere::Sphere;
@@ -163,6 +164,18 @@ impl Scene {
                     let direction = Vector3::from(&float_tokens[3..]);
                     scene.lights.push(Box::new(DirectionalLight::new(
                         color, direction,
+                    )));
+                }
+                "spot_light" => {
+                    assert_eq!(line.len(), 12);
+                    let float_tokens = parse_full_slice(&line[1..]);
+                    let color = Pixel::from_slice_unclamped(&float_tokens[..3]);
+                    let position = Vector3::from(&float_tokens[3..6]);
+                    let direction = Vector3::from(&float_tokens[6..9]);
+                    let angle1 = float_tokens[9];
+                    let angle2 = float_tokens[10];
+                    scene.lights.push(Box::new(SpotLight::new(
+                        color, position, direction, angle1, angle2,
                     )));
                 }
                 "max_depth" => {
