@@ -1,10 +1,10 @@
 //! A plane
 
-use intersection::Intersection;
-use material::Material;
-use objects::object::Object;
-use ray::Ray;
-use vector::Vector3;
+use crate::intersection::Intersection;
+use crate::material::Material;
+use crate::objects::object::Object;
+use crate::ray::Ray;
+use crate::vector::Vector3;
 
 const EPSILON: f64 = 0.001;
 

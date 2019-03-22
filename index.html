@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title></title>
-</head>
-<body>
-  <script type="module" src="./assets/loadWasm.js"></script>
-  <script type="module" src="./assets/index.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <title>WebAssembly Ray Tracer</title>
+    <link rel="stylesheet" href="./assets/style.css">
+  </head>
+  <body>
+    <img id="rendered-scene" src="">
+
+    <textarea id="scene-file"></textarea>
+
+    <input id="upload-scene-file" type="file">
+    <button id="render-scene">Render</button>
+
+    <script type="module" src="./assets/loadWasm.js"></script>
+    <script type="module" src="./assets/index.js"></script>
+  </body>
 </html>

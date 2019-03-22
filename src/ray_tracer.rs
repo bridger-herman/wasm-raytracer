@@ -1,12 +1,12 @@
 //! The main ray tracing implementation
 
-use image::Image;
-use intersection::Intersection;
-use objects::object::Object;
-use pixel::Pixel;
-use ray::Ray;
-use scene::Scene;
-use vector::MAX_VECTOR3;
+use crate::image::Image;
+use crate::intersection::Intersection;
+use crate::objects::object::Object;
+use crate::pixel::Pixel;
+use crate::ray::Ray;
+use crate::scene::Scene;
+use crate::vector::MAX_VECTOR3;
 
 pub struct RayTracer;
 
@@ -47,10 +47,10 @@ impl RayTracer {
 
                 done += 1;
                 if done % 10000 == 0 {
-                    println!(
-                        "Ray casting: {}/{}",
-                        done,
-                        scene.resolution.0 * scene.resolution.1
+                    info!(
+                        "Ray casting: {:.0}%",
+                        100.0 * (done as f64
+                            / (scene.resolution.0 * scene.resolution.1) as f64),
                     );
                 }
             }

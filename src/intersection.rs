@@ -1,6 +1,6 @@
 //! Intersection record
 
-use vector::Vector3;
+use crate::vector::Vector3;
 
 #[derive(Debug, Default)]
 pub struct Intersection {

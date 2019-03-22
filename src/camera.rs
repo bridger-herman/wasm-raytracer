@@ -1,6 +1,6 @@
 //! A virtual camera
 
-use vector::Vector3;
+use crate::vector::Vector3;
 
 /// A virtual camera
 #[derive(Debug)]

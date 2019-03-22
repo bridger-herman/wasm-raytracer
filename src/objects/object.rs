@@ -4,9 +4,9 @@
 
 use std::fmt;
 
-use intersection::Intersection;
-use material::Material;
-use ray::Ray;
+use crate::intersection::Intersection;
+use crate::material::Material;
+use crate::ray::Ray;
 
 pub trait Object {
     fn intersects(&self, ray: &Ray) -> Option<Intersection>;

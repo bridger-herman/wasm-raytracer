@@ -4,18 +4,18 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::str::FromStr;
 
-use camera::Camera;
-use lights::directional_light::DirectionalLight;
-use lights::light::Light;
-use lights::point_light::PointLight;
-use lights::spot_light::SpotLight;
-use material::Material;
-use objects::object::Object;
-use objects::plane::Plane;
-use objects::sphere::Sphere;
-use objects::triangle::Triangle;
-use pixel::Pixel;
-use vector::Vector3;
+use crate::camera::Camera;
+use crate::lights::directional_light::DirectionalLight;
+use crate::lights::light::Light;
+use crate::lights::point_light::PointLight;
+use crate::lights::spot_light::SpotLight;
+use crate::material::Material;
+use crate::objects::object::Object;
+use crate::objects::plane::Plane;
+use crate::objects::sphere::Sphere;
+use crate::objects::triangle::Triangle;
+use crate::pixel::Pixel;
+use crate::vector::Vector3;
 
 #[derive(Debug)]
 pub struct Scene {
@@ -67,6 +67,11 @@ impl Scene {
         scene_file
             .read_to_string(&mut scene_contents)
             .expect("Unable to read scene file");
+
+        Self::from_text(scene_contents)
+    }
+
+    pub fn from_text(scene_contents: String) -> Self {
         let scene_lines: Vec<_> = scene_contents
             .lines()
             .filter(|&line| !line.starts_with('#') && !line.is_empty())

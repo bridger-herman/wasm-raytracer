@@ -1,11 +1,11 @@
 //! Spot light. Has a position and a direction.
 
-use camera::Camera;
-use intersection::Intersection;
-use lights::light::Light;
-use material::Material;
-use pixel::Pixel;
-use vector::Vector3;
+use crate::camera::Camera;
+use crate::intersection::Intersection;
+use crate::lights::light::Light;
+use crate::material::Material;
+use crate::pixel::Pixel;
+use crate::vector::Vector3;
 
 #[derive(Debug)]
 pub struct SpotLight {

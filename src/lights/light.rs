@@ -4,11 +4,11 @@
 
 use std::fmt;
 
-use camera::Camera;
-use intersection::Intersection;
-use material::Material;
-use pixel::Pixel;
-use vector::Vector3;
+use crate::camera::Camera;
+use crate::intersection::Intersection;
+use crate::material::Material;
+use crate::pixel::Pixel;
+use crate::vector::Vector3;
 
 pub trait Light {
     /// Calculate the direction of the light from the intersection

@@ -1,6 +1,6 @@
 //! A material to apply to a ray-traced object
 
-use pixel::Pixel;
+use crate::pixel::Pixel;
 
 /// Ray tracing material
 ///
