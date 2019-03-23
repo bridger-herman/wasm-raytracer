@@ -1,30 +1,8 @@
-# Assignment 2 - Ray casting
+# WebAssembly Ray Tracer
 
-## Instructions for running the code:
+A simple ray tracer, built in Rust.
 
-1. Follow the instructions at [rustup.rs](https://rustup.rs/) to install the
-   Rust language, if you don't have it already installed
+The Rust source is compiled to WebAssembly, and the final result can be seen
+here:
 
-2. Clone this project's repository:
-
-    ```
-    git clone https://github.umn.edu/herma582/raytracer-5607.git
-    ```
-
-3. Run the following command from inside the repository:
-
-    ```
-    cargo build
-    ```
-
-4. Run the code:
-
-    ```
-    cargo run -- <scene file>
-    ```
-
-## Executable
-
-An executable is also provided (for Linux x86\_64) inside the `bin/`
-directory.
-
+<https://bridger-herman.github.io/wasm-raytracer/>

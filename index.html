@@ -10,7 +10,13 @@
 
     <textarea id="scene-file"></textarea>
 
-    <input id="upload-scene-file" type="file">
+    <label for="upload-scene-file">
+      Upload a scene file (or modify the one above):
+      <input id="upload-scene-file" type="file">
+    </label>
+
+    <p id="progress-bar">[Look in console for rendering percent complete]</p>
+
     <button id="render-scene">Render</button>
 
     <script type="module" src="./assets/loadWasm.js"></script>
