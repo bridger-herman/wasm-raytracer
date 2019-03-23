@@ -1,5 +1,5 @@
-import { importWasm } from './loadWasm.js';
-import { render_scene } from '../pkg/wasm_raytracer.js'
+import { importWasm } from '/wasm-raytracer/assets/loadWasm.js';
+import { render_scene } from '/wasm-raytracer/assets/pkg/wasm_raytracer.js'
 
 const DEFAULT_SCENE =
 "# Simple Sphere Scene\n" +

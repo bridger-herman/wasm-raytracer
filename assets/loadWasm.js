@@ -8,7 +8,7 @@
 // will "boot" the module and make it ready to use. Currently browsers
 // don't support natively imported WebAssembly as an ES module, but
 // eventually the manual initialization won't be required!
-import { default as init } from '../pkg/wasm_raytracer.js';
+import { default as init } from '/wasm-raytracer/assets/pkg/wasm_raytracer.js';
 
 export var wasm = null;
 
@@ -24,6 +24,6 @@ export async function importWasm() {
   // exports which is the same as importing the `*_bg` module in other
   // modes
   console.log('initialing wasm');
-  wasm = await init('../pkg/wasm_raytracer_bg.wasm');
+  wasm = await init('/wasm-raytracer/assets/pkg/wasm_raytracer_bg.wasm');
   console.log('wasm initialized');
 }
